@@ -12,7 +12,7 @@ var mainState = (function (_super) {
     function mainState() {
         _super.apply(this, arguments);
         this.ESPAIH = 167;
-        this.ESPAIV = 150;
+        this.ESPAIV = 110;
     }
     mainState.prototype.preload = function () {
         _super.prototype.preload.call(this);
@@ -29,6 +29,10 @@ var mainState = (function (_super) {
         this.gat.anchor.setTo(0.5, 0.5);
         //Afegueixo fisica al gat.
         this.game.physics.arcade.enable(this.gat);
+        // que colisione contra las paredes.
+        this.gat.body.collideWorldBounds = true;
+        // Agregamos gravedad al jugador
+        this.gat.body.gravity.y = 500;
     };
     mainState.prototype.configWorld = function () {
         this.terraesquerra = this.game.add.sprite(this.game.world.width - 798, this.game.world.height - 100, 'terraesquerra');
@@ -45,9 +49,9 @@ var mainState = (function (_super) {
         this.baldes = this.add.group();
         this.baldes.enableBody = true;
         this.baldes.physicsBodyType = Phaser.Physics.ARCADE;
-        for (var x = 0; x < 3; x++) {
+        for (var x = 0; x < 4; x++) {
             for (var y = 0; y < 5; y++) {
-                if (x == 0 && y == 2 || x == 1 && y == 0 || x == 1 && y == 4 || x == 2 && y == 1 || x == 2 && y == 2 || x == 2 && y == 3) {
+                if (x == 1 && y == 2 || x == 2 && y == 0 || x == 2 && y == 4 || x == 3 && y == 1 || x == 3 && y == 2 || x == 3 && y == 3) {
                     var newElement = new Balda(this.game, y * this.ESPAIH, x * this.ESPAIV + 50, 'baldes');
                     this.baldes.add(newElement);
                 }
@@ -65,7 +69,6 @@ var mainState = (function (_super) {
     };
     mainState.prototype.update = function () {
         _super.prototype.update.call(this);
-        this.game.physics.arcade.collide(this.gat, this.baldainici);
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
@@ -86,7 +89,7 @@ var mainState = (function (_super) {
             this.gat.body.velocity.x = 0;
         }
         // Si pulsamos la flecha arriba y el jugador está tocando el suelo
-        if (this.cursor.up.isDown && this.gat.body.touching.down) {
+        if (this.cursor.up.isDown) {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
         }

@@ -10,7 +10,7 @@ class mainState extends Phaser.State {
     baldainici:Phaser.Sprite;
     baldes:Phaser.Group;
     ESPAIH = 167;
-    ESPAIV = 150;
+    ESPAIV = 110;
 
     preload():void {
         super.preload();
@@ -33,6 +33,11 @@ class mainState extends Phaser.State {
         this.gat.anchor.setTo(0.5, 0.5);
         //Afegueixo fisica al gat.
         this.game.physics.arcade.enable(this.gat);
+        // que colisione contra las paredes.
+        this.gat.body.collideWorldBounds = true;
+        // Agregamos gravedad al jugador
+        this.gat.body.gravity.y = 500;
+
     }
     configWorld(){
         this.terraesquerra = this.game.add.sprite(
@@ -67,11 +72,11 @@ class mainState extends Phaser.State {
         this.baldes = this.add.group();
         this.baldes.enableBody = true;
         this.baldes.physicsBodyType = Phaser.Physics.ARCADE;
-        for (var x = 0; x < 3; x++)
+        for (var x = 0; x < 4; x++)
         {
             for (var y = 0; y < 5; y++)
             {
-                if(x==0 && y==2 || x==1 && y== 0|| x==1 && y==4 || x==2 && y==1 || x==2 && y==2||x==2 && y==3) {
+                if(x==1 && y==2 || x==2 && y== 0|| x==2 && y==4 || x==3 && y==1 || x==3 && y==2||x==3 && y==3) {
                     var newElement = new Balda(this.game, y * this.ESPAIH, x * this.ESPAIV + 50, 'baldes');
                     this.baldes.add(newElement);
                 }
@@ -94,10 +99,10 @@ class mainState extends Phaser.State {
 
     update():void {
         super.update();
-        this.game.physics.arcade.collide(this.gat, this.baldainici);
+
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
-       this.game.physics.arcade.collide(this.baldes,this.gat);
+        this.game.physics.arcade.collide(this.baldes,this.gat);
 
 
 
@@ -122,7 +127,7 @@ class mainState extends Phaser.State {
             this.gat.body.velocity.x = 0;
         }
         // Si pulsamos la flecha arriba y el jugador está tocando el suelo
-        if (this.cursor.up.isDown && this.gat.body.touching.down) {
+        if (this.cursor.up.isDown) {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
         }
