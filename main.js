@@ -13,6 +13,7 @@ var mainState = (function (_super) {
         _super.apply(this, arguments);
         this.ESPAIH = 167;
         this.ESPAIV = 110;
+        this.CONTADORTIEMPO = 60;
     }
     mainState.prototype.preload = function () {
         _super.prototype.preload.call(this);
@@ -66,12 +67,16 @@ var mainState = (function (_super) {
         this.configGat();
         // Cogemos los cursores para gestionar la entrada
         this.cursor = this.game.input.keyboard.createCursorKeys();
+        this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, { font: "25px Fixedsys", fill: "#fff", align: "center" });
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
     };
     mainState.prototype.update = function () {
         _super.prototype.update.call(this);
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
+        //this.CONTADORTIEMPO=this.CONTADORTIEMPO-1;
+        //  this.tiempo.setText("Tiempo :"+this.CONTADORTIEMPO);
         this.movePlayer();
     };
     mainState.prototype.movePlayer = function () {
@@ -93,6 +98,12 @@ var mainState = (function (_super) {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
         }
+        if (this.CONTADORTIEMPO == 0) {
+        }
+    };
+    mainState.prototype.updateCounter = function () {
+        this.CONTADORTIEMPO--;
+        this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
     };
     return mainState;
 })(Phaser.State);

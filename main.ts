@@ -11,6 +11,8 @@ class mainState extends Phaser.State {
     baldes:Phaser.Group;
     ESPAIH = 167;
     ESPAIV = 110;
+    tiempo:Phaser.Text;
+    CONTADORTIEMPO=60;
 
     preload():void {
         super.preload();
@@ -95,6 +97,8 @@ class mainState extends Phaser.State {
         this.configGat();
         // Cogemos los cursores para gestionar la entrada
         this.cursor = this.game.input.keyboard.createCursorKeys();
+        this.tiempo = this.game.add.text(20,10,"Tiempo : " +this.CONTADORTIEMPO, { font: "25px Fixedsys", fill: "#fff", align: "center"});
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
     }
 
     update():void {
@@ -103,7 +107,8 @@ class mainState extends Phaser.State {
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes,this.gat);
-
+        //this.CONTADORTIEMPO=this.CONTADORTIEMPO-1;
+      //  this.tiempo.setText("Tiempo :"+this.CONTADORTIEMPO);
 
 
         this.movePlayer();
@@ -131,7 +136,18 @@ class mainState extends Phaser.State {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
         }
+        if(this.CONTADORTIEMPO==0){
+            
+        }
+
     }
+    updateCounter() {
+
+        this.CONTADORTIEMPO--;
+        this.tiempo.setText("Tiempo : "+this.CONTADORTIEMPO);
+
+
+}
 
 }
 class Balda extends Phaser.Sprite {
