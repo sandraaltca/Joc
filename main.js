@@ -62,31 +62,45 @@ var mainState = (function (_super) {
             object = 'basura';
         }
         if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, 'teclat', 1);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, object, 1);
             this.objectes.add(newElement);
             this.balda1 = true;
         }
-        else 
-        //|| x==2 && y==4
-        if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat', 2);
+        else if (x == 2 && y == 0 && !this.balda2) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, object, 2);
             this.objectes.add(newElement);
             this.balda2 = true;
         }
         else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat', 3);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, object, 3);
             this.objectes.add(newElement);
             this.balda3 = true;
         }
         else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, 'teclat', 4);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, object, 4);
             this.objectes.add(newElement);
             this.balda4 = true;
         }
-        // if( x==3 && y==1 || x==3 && y==2||x==3 && y==3 ) {
-        //   var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90 + 50, object);
-        // this.objectes.add(newElement);
-        //}
+        else if (x == 4 && y == 4 && !this.balda5) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, object, 5);
+            this.objectes.add(newElement);
+            this.balda5 = true;
+        }
+        else if (x == 3 && y == 1 && !this.balda6) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 6);
+            this.objectes.add(newElement);
+            this.balda6 = true;
+        }
+        else if (x == 3 && y == 2 && !this.balda7) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 7);
+            this.objectes.add(newElement);
+            this.balda7 = true;
+        }
+        else if (x == 3 && y == 3 && !this.balda8) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 8);
+            this.objectes.add(newElement);
+            this.balda8 = true;
+        }
     };
     mainState.prototype.configGat = function () {
         this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'gat');
