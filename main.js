@@ -38,13 +38,8 @@ var mainState = (function (_super) {
         this.game.load.image('basura', 'assets/basura.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
     };
-    mainState.prototype.sortirObjectes = function () {
-        this.objectes = this.add.group();
-        this.objectes.enableBody = true;
-        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+    mainState.prototype.tipusObjecte = function () {
         var tipus = Math.floor((Math.random() * 6) + 1);
-        var x = Math.floor((Math.random() * 8) + 1);
-        var y = Math.floor(Math.random() * 8);
         var object;
         if (tipus == 1) {
             object = 'teclat';
@@ -61,6 +56,15 @@ var mainState = (function (_super) {
         else {
             object = 'basura';
         }
+        return object;
+    };
+    mainState.prototype.sortirObjectes = function () {
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+        var x = Math.floor((Math.random() * 8) + 1);
+        var y = Math.floor(Math.random() * 8);
+        var object = this.tipusObjecte();
         if (x == 1 && y == 2 && !this.balda1) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, object, 1);
             this.objectes.add(newElement);

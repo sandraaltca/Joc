@@ -41,14 +41,8 @@ class mainState extends Phaser.State {
 
 
     }
-    sortirObjectes(){
-
-        this.objectes = this.add.group();
-        this.objectes.enableBody = true;
-        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+    tipusObjecte():String{
         var tipus = Math.floor((Math.random() * 6) + 1);
-        var x = Math.floor((Math.random() * 8) + 1);
-        var y=  Math.floor(Math.random() *8);
         var object;
         if(tipus==1){
             object='teclat';
@@ -61,6 +55,18 @@ class mainState extends Phaser.State {
         }else {
             object='basura';
         }
+        return object;
+    }
+    sortirObjectes(){
+
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+
+        var x = Math.floor((Math.random() * 8) + 1);
+        var y=  Math.floor(Math.random() *8);
+        var object=this. tipusObjecte();
+
         if(x==1&& y==2 && !this.balda1){
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15 ,  object,1);
             this.objectes.add(newElement);
