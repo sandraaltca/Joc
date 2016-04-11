@@ -3,6 +3,7 @@
 //http://www.phaser.io/news/2015/11/be-a-cat
 //74538f
 class mainState extends Phaser.State {
+    cursor: Phaser.CursorKeys;
     terraesquerra:Phaser.Sprite;
     gat:Phaser.Sprite;
     terradreta:Phaser.Sprite;
@@ -17,7 +18,9 @@ class mainState extends Phaser.State {
         this.game.load.image('terradreta','assets/terra_dreta.png');
         this.game.load.image('baldainici','assets/baldaInici.png');
         this.game.load.image('baldes','assets/balda.png');
-        this.game.load.image('gat','assets/gat_quiet.png')
+        this.game.load.image('gat','assets/gat_quiet.png');
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+
 
     }
     configGat(){
@@ -37,16 +40,26 @@ class mainState extends Phaser.State {
             this.game.world.height - 100,
             'terraesquerra'
         )
+        this.game.physics.arcade.enable(this.terraesquerra);
+        this.terraesquerra.body.immovable = true;
+
+
         this.baldainici = this.game.add.sprite(
             this.game.world.width-565,
             this.game.world.height - 35,
             'baldainici'
         )
+        this.game.physics.arcade.enable(this.baldainici);
+        this.baldainici.body.immovable = true;
+
         this.terradreta = this.game.add.sprite(
             this.game.world.width-250,
             this.game.world.height - 100,
             'terradreta'
         )
+        this.game.physics.arcade.enable(this.terradreta);
+        this.terradreta.body.immovable = true;
+
 
     }
     createbaldes(){
@@ -69,19 +82,57 @@ class mainState extends Phaser.State {
     }
 
     create():void {
+
         super.create();
         this.game.stage.backgroundColor = "#74538f";
         this.configWorld();
         this.createbaldes();
         this.configGat();
+        // Cogemos los cursores para gestionar la entrada
+        this.cursor = this.game.input.keyboard.createCursorKeys();
     }
 
     update():void {
         super.update();
+        this.game.physics.arcade.collide(this.gat, this.baldainici);
+        this.game.physics.arcade.collide(this.gat, this.terradreta);
+        this.game.physics.arcade.collide(this.gat, this.terraesquerra);
+       this.game.physics.arcade.collide(this.baldes,this.gat);
+
+
+
+        this.movePlayer();
+
+    }
+
+    movePlayer():void {
+        // Si pulsamos el cursor izquierdo
+        if (this.cursor.left.isDown) {
+            // Movemos al jugador a la izquierda
+            this.gat.body.velocity.x = -200;
+        }
+        // Si pulsamos el cursor derecho
+        else if (this.cursor.right.isDown) {
+            // Movemos al jugador a la derecha
+            this.gat.body.velocity.x = 200;
+        }
+        // Si no se pulsan ni el cursor izquierdo ni el derecho
+        else {
+            // el jugador se para
+            this.gat.body.velocity.x = 0;
+        }
+        // Si pulsamos la flecha arriba y el jugador está tocando el suelo
+        if (this.cursor.up.isDown && this.gat.body.touching.down) {
+            // el jugador se mueve hacia arriba (salto)
+            this.gat.body.velocity.y = -320;
+        }
     }
 
 }
 class Balda extends Phaser.Sprite {
+
+    objecte= false;
+
     constructor(game:Phaser.Game, x:number, y:number, key:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame:string|number) {
         super(game, x, y, key, frame);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
