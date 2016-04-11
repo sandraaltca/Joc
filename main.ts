@@ -9,10 +9,20 @@ class mainState extends Phaser.State {
     terradreta:Phaser.Sprite;
     baldainici:Phaser.Sprite;
     baldes:Phaser.Group;
+    objectes:Phaser.Group;
     ESPAIH = 167;
     ESPAIV = 110;
     tiempo:Phaser.Text;
     CONTADORTIEMPO=60;
+    contadorObjectes=0;
+    balda1=false;
+    balda2 = false;
+    balda3 = false;
+    balda4=false;
+    balda5=false;
+    balda6=false;
+    balda7=false;
+    balda8=false;
 
     preload():void {
         super.preload();
@@ -21,10 +31,65 @@ class mainState extends Phaser.State {
         this.game.load.image('baldainici','assets/baldaInici.png');
         this.game.load.image('baldes','assets/balda.png');
         this.game.load.image('gat','assets/gat_quiet.png');
+
+        this.game.load.image('teclat','assets/teclat.png');
+        this.game.load.image('llibre','assets/llibre1.png');
+        this.game.load.image('rellotge','assets/rellotge.png');
+        this.game.load.image('flor','assets/flor.png');
+        this.game.load.image('basura','assets/basura.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
 
     }
+    sortirObjectes(){
+
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+        var tipus = Math.floor((Math.random() * 6) + 1);
+        var x = Math.floor((Math.random() * 8) + 1);
+        var y=  Math.floor(Math.random() *8);
+        var object;
+        if(tipus==1){
+            object='teclat';
+        }else if(tipus==2){
+            object='llibre';
+        }else if(tipus==3){
+            object='rellotge';
+        }else if(tipus==4){
+            object='flor';
+        }else {
+            object='basura';
+        }
+        if(x==1&& y==2 && !this.balda1){
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, object);
+            this.objectes.add(newElement);
+            this.balda1=true;
+        }else
+
+        //|| x==2 && y==4
+        if(x==2 && y== 0 && !this.balda2 ){
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            this.objectes.add(newElement);
+            this.balda2=true;
+        }else if( x==2 && y==4 && !this.balda3){
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            this.objectes.add(newElement);
+            this.balda3=true;
+          //|| x==4&&y==4
+        }else
+        if(x ==4 && y==0 && !this.balda4){
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x *97 + 50, object);
+            this.objectes.add(newElement);
+            this.balda4=true;
+        }
+       // if( x==3 && y==1 || x==3 && y==2||x==3 && y==3 ) {
+         //   var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90 + 50, object);
+           // this.objectes.add(newElement);
+        //}
+
+    }
+
     configGat(){
         this.gat = this.game.add.sprite(
             this.game.world.centerX,
@@ -98,7 +163,8 @@ class mainState extends Phaser.State {
         // Cogemos los cursores para gestionar la entrada
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.tiempo = this.game.add.text(20,10,"Tiempo : " +this.CONTADORTIEMPO, { font: "25px Fixedsys", fill: "#fff", align: "center"});
-        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND,this.tempsObjectes,this);
     }
 
     update():void {
@@ -107,13 +173,16 @@ class mainState extends Phaser.State {
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes,this.gat);
-        //this.CONTADORTIEMPO=this.CONTADORTIEMPO-1;
-      //  this.tiempo.setText("Tiempo :"+this.CONTADORTIEMPO);
+
+        if(this.contadorObjectes%100==0){
+            this.sortirObjectes();
+        }
 
 
         this.movePlayer();
 
     }
+
 
     movePlayer():void {
         // Si pulsamos el cursor izquierdo
@@ -141,14 +210,24 @@ class mainState extends Phaser.State {
         }
 
     }
-    updateCounter() {
+    temporitzadorPartida() {
 
         this.CONTADORTIEMPO--;
         this.tiempo.setText("Tiempo : "+this.CONTADORTIEMPO);
-
+    }
+    tempsObjectes(){
+        this.contadorObjectes++;
+    }
 
 }
+class Objecte extends Phaser.Sprite {
 
+    constructor(game:Phaser.Game, x:number, y:number, key:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame:string|number) {
+        super(game, x, y, key, frame);
+        this.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
+        this.height-900;
+    }
 }
 class Balda extends Phaser.Sprite {
 
@@ -158,7 +237,7 @@ class Balda extends Phaser.Sprite {
         super(game, x, y, key, frame);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
-        this.height-900;
+
     }
 }
 

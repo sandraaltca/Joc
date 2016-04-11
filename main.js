@@ -14,6 +14,15 @@ var mainState = (function (_super) {
         this.ESPAIH = 167;
         this.ESPAIV = 110;
         this.CONTADORTIEMPO = 60;
+        this.contadorObjectes = 0;
+        this.balda1 = false;
+        this.balda2 = false;
+        this.balda3 = false;
+        this.balda4 = false;
+        this.balda5 = false;
+        this.balda6 = false;
+        this.balda7 = false;
+        this.balda8 = false;
     }
     mainState.prototype.preload = function () {
         _super.prototype.preload.call(this);
@@ -22,7 +31,62 @@ var mainState = (function (_super) {
         this.game.load.image('baldainici', 'assets/baldaInici.png');
         this.game.load.image('baldes', 'assets/balda.png');
         this.game.load.image('gat', 'assets/gat_quiet.png');
+        this.game.load.image('teclat', 'assets/teclat.png');
+        this.game.load.image('llibre', 'assets/llibre1.png');
+        this.game.load.image('rellotge', 'assets/rellotge.png');
+        this.game.load.image('flor', 'assets/flor.png');
+        this.game.load.image('basura', 'assets/basura.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    };
+    mainState.prototype.sortirObjectes = function () {
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+        var tipus = Math.floor((Math.random() * 6) + 1);
+        var x = Math.floor((Math.random() * 8) + 1);
+        var y = Math.floor(Math.random() * 8);
+        var object;
+        if (tipus == 1) {
+            object = 'teclat';
+        }
+        else if (tipus == 2) {
+            object = 'llibre';
+        }
+        else if (tipus == 3) {
+            object = 'rellotge';
+        }
+        else if (tipus == 4) {
+            object = 'flor';
+        }
+        else {
+            object = 'basura';
+        }
+        if (x == 1 && y == 2 && !this.balda1) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, object);
+            this.objectes.add(newElement);
+            this.balda1 = true;
+        }
+        else 
+        //|| x==2 && y==4
+        if (x == 2 && y == 0 && !this.balda2) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            this.objectes.add(newElement);
+            this.balda2 = true;
+        }
+        else if (x == 2 && y == 4 && !this.balda3) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            this.objectes.add(newElement);
+            this.balda3 = true;
+        }
+        else if (x == 4 && y == 0 && !this.balda4) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, object);
+            this.objectes.add(newElement);
+            this.balda4 = true;
+        }
+        // if( x==3 && y==1 || x==3 && y==2||x==3 && y==3 ) {
+        //   var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90 + 50, object);
+        // this.objectes.add(newElement);
+        //}
     };
     mainState.prototype.configGat = function () {
         this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'gat');
@@ -68,15 +132,17 @@ var mainState = (function (_super) {
         // Cogemos los cursores para gestionar la entrada
         this.cursor = this.game.input.keyboard.createCursorKeys();
         this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, { font: "25px Fixedsys", fill: "#fff", align: "center" });
-        this.game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
+        this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
     };
     mainState.prototype.update = function () {
         _super.prototype.update.call(this);
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
-        //this.CONTADORTIEMPO=this.CONTADORTIEMPO-1;
-        //  this.tiempo.setText("Tiempo :"+this.CONTADORTIEMPO);
+        if (this.contadorObjectes % 100 == 0) {
+            this.sortirObjectes();
+        }
         this.movePlayer();
     };
     mainState.prototype.movePlayer = function () {
@@ -101,12 +167,25 @@ var mainState = (function (_super) {
         if (this.CONTADORTIEMPO == 0) {
         }
     };
-    mainState.prototype.updateCounter = function () {
+    mainState.prototype.temporitzadorPartida = function () {
         this.CONTADORTIEMPO--;
         this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
     };
+    mainState.prototype.tempsObjectes = function () {
+        this.contadorObjectes++;
+    };
     return mainState;
 })(Phaser.State);
+var Objecte = (function (_super) {
+    __extends(Objecte, _super);
+    function Objecte(game, x, y, key, frame) {
+        _super.call(this, game, x, y, key, frame);
+        this.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
+        this.height - 900;
+    }
+    return Objecte;
+})(Phaser.Sprite);
 var Balda = (function (_super) {
     __extends(Balda, _super);
     function Balda(game, x, y, key, frame) {
@@ -114,7 +193,6 @@ var Balda = (function (_super) {
         this.objecte = false;
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
-        this.height - 900;
     }
     return Balda;
 })(Phaser.Sprite);
