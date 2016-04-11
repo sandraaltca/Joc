@@ -62,24 +62,24 @@ var mainState = (function (_super) {
             object = 'basura';
         }
         if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, 'teclat');
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, 'teclat', 1);
             this.objectes.add(newElement);
             this.balda1 = true;
         }
         else 
         //|| x==2 && y==4
         if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat');
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat', 2);
             this.objectes.add(newElement);
             this.balda2 = true;
         }
         else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat');
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat', 3);
             this.objectes.add(newElement);
             this.balda3 = true;
         }
         else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, 'teclat');
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, 'teclat', 4);
             this.objectes.add(newElement);
             this.balda4 = true;
         }
@@ -178,11 +178,12 @@ var mainState = (function (_super) {
 })(Phaser.State);
 var Objecte = (function (_super) {
     __extends(Objecte, _super);
-    function Objecte(game, x, y, key, frame) {
+    function Objecte(game, x, y, key, frame, balda) {
         _super.call(this, game, x, y, key, frame);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
         this.height - 900;
+        this.balda = balda;
     }
     return Objecte;
 })(Phaser.Sprite);
