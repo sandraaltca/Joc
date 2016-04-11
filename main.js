@@ -62,24 +62,24 @@ var mainState = (function (_super) {
             object = 'basura';
         }
         if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, object);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 55 + 50, 'teclat');
             this.objectes.add(newElement);
             this.balda1 = true;
         }
         else 
         //|| x==2 && y==4
         if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat');
             this.objectes.add(newElement);
             this.balda2 = true;
         }
         else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, object);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80 + 50, 'teclat');
             this.objectes.add(newElement);
             this.balda3 = true;
         }
         else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, object);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 97 + 50, 'teclat');
             this.objectes.add(newElement);
             this.balda4 = true;
         }
