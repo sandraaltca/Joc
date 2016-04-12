@@ -15,8 +15,11 @@ class mainState extends Phaser.State {
     tiempo:Phaser.Text;
     CONTADORTIEMPO=60;
     contadorObjectes=0;
+
+    puntuacio=0;
+
     balda1=false;
-    balda2 = false;
+    balda2=false;
     balda3 = false;
     balda4=false;
     balda5=false;
@@ -62,7 +65,6 @@ class mainState extends Phaser.State {
         this.objectes = this.add.group();
         this.objectes.enableBody = true;
         this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
-
         var x = Math.floor((Math.random() * 8) + 1);
         var y=  Math.floor(Math.random() *8);
         var object=this. tipusObjecte();
@@ -104,7 +106,6 @@ class mainState extends Phaser.State {
 
 
     }
-
     configGat(){
         this.gat = this.game.add.sprite(
             this.game.world.centerX,
@@ -167,7 +168,6 @@ class mainState extends Phaser.State {
 
 
     }
-
     create():void {
 
         super.create();
@@ -181,24 +181,50 @@ class mainState extends Phaser.State {
         this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
         this.game.time.events.loop(Phaser.Timer.SECOND,this.tempsObjectes,this);
     }
-
     update():void {
         super.update();
-
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes,this.gat);
 
-        if(this.contadorObjectes%100==0){
+        if(this.contadorObjectes==1){
             this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.contadorObjectes=0;
         }
-
-
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         this.movePlayer();
-
     }
-
-
+    alliberarBlada(balda:number):void{
+        if(balda==1){
+            this.balda1=true;
+        }else if( balda==2){
+            this.balda2=true;
+        }else if( balda==3){
+            this.balda3=true;
+        }else if(balda==4){
+            this.balda4=true;
+        }else if(balda==5){
+            this.balda5=true;
+        }  else if(balda==6){
+            this.balda6=true;
+        } else if(balda==7){
+            this.balda7=true;
+        }else{
+            this.balda8=true;
+        }
+    }
+    tirarObjectes(gat:Phaser.Sprite, objecte:Objecte):void{
+        var num = objecte.balda;
+        this.alliberarBlada(num);
+        this.puntuacio=this.puntuacio+10;
+        this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;
+        objecte.kill();
+    }
     movePlayer():void {
         // Si pulsamos el cursor izquierdo
         if (this.cursor.left.isDown) {
@@ -216,7 +242,7 @@ class mainState extends Phaser.State {
             this.gat.body.velocity.x = 0;
         }
         // Si pulsamos la flecha arriba y el jugador está tocando el suelo
-        if (this.cursor.up.isDown) {
+        if (this.cursor.up.isDown ) {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
         }
@@ -239,16 +265,15 @@ class Objecte extends Phaser.Sprite {
     balda;
     constructor(game:Phaser.Game, x:number, y:number, key:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame:string|number,balda:number) {
         super(game, x, y, key, frame);
+
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
+
         this.height-900;
         this.balda = balda;
     }
 }
 class Balda extends Phaser.Sprite {
-
-    objecte= false;
-
     constructor(game:Phaser.Game, x:number, y:number, key:string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture, frame:string|number) {
         super(game, x, y, key, frame);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);

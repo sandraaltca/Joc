@@ -15,6 +15,7 @@ var mainState = (function (_super) {
         this.ESPAIV = 110;
         this.CONTADORTIEMPO = 60;
         this.contadorObjectes = 0;
+        this.puntuacio = 0;
         this.balda1 = false;
         this.balda2 = false;
         this.balda3 = false;
@@ -158,10 +159,50 @@ var mainState = (function (_super) {
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
-        if (this.contadorObjectes % 100 == 0) {
+        if (this.contadorObjectes == 1) {
             this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.sortirObjectes();
+            this.contadorObjectes = 0;
         }
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         this.movePlayer();
+    };
+    mainState.prototype.alliberarBlada = function (balda) {
+        if (balda == 1) {
+            this.balda1 = true;
+        }
+        else if (balda == 2) {
+            this.balda2 = true;
+        }
+        else if (balda == 3) {
+            this.balda3 = true;
+        }
+        else if (balda == 4) {
+            this.balda4 = true;
+        }
+        else if (balda == 5) {
+            this.balda5 = true;
+        }
+        else if (balda == 6) {
+            this.balda6 = true;
+        }
+        else if (balda == 7) {
+            this.balda7 = true;
+        }
+        else {
+            this.balda8 = true;
+        }
+    };
+    mainState.prototype.tirarObjectes = function (gat, objecte) {
+        var num = objecte.balda;
+        this.alliberarBlada(num);
+        this.puntuacio = this.puntuacio + 10;
+        this.CONTADORTIEMPO = this.CONTADORTIEMPO + 3;
+        objecte.kill();
     };
     mainState.prototype.movePlayer = function () {
         // Si pulsamos el cursor izquierdo
@@ -209,7 +250,6 @@ var Balda = (function (_super) {
     __extends(Balda, _super);
     function Balda(game, x, y, key, frame) {
         _super.call(this, game, x, y, key, frame);
-        this.objecte = false;
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
     }
