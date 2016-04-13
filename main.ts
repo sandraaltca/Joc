@@ -45,6 +45,11 @@ class mainState extends Phaser.State {
 
 
     }
+    configObjectes(){
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+    }
 
     tipusObjecte():string {
         var tipus = Math.floor((Math.random() * 6) + 1);
@@ -62,19 +67,37 @@ class mainState extends Phaser.State {
         }
         return object;
     }
-    comprovarBaldes(balda:number){
-        if(balda==1){
+    comprovarBaldes(balda:number):boolean{
+        var respota = true;
+        if(balda==1 && !this.balda1){
             this.balda1=true;
-        }else if(balda=2){
+            respota = false;
+        }else if(balda==2 && !this.balda2){
             this.balda2=true;
+            respota = false;
+        }else if(balda==3 &&  this.balda3){
+            this.balda3=true;
+            respota = false;
+        }else if(balda==4 && this.balda4){
+            this.balda4=true;
+            respota = false;
+        }else if(balda==5 && this.balda5){
+            this.balda5=true;
+            respota = false;
+        }else if(balda==6 && this.balda6){
+            this.balda4=true;
+            respota = false;
+        }else if(balda==7 && this.balda7){
+            this.balda7=true;
+            respota = false;
+        }else if(balda==8 && this.balda8){
+            this.balda8=true;
+            respota = false;
         }
+
+        return respota;
     }
-    sortirObjectes() {
-
-        this.objectes = this.add.group();
-        this.objectes.enableBody = true;
-        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
-
+    crearObjectes() {
 
         var posiciones:Point[] = [
             new Point(1, 2), new Point(2, 0), // Fila arriba
@@ -104,10 +127,11 @@ class mainState extends Phaser.State {
         var altura = param["altura"];
         var objectType = this.tipusObjecte();
 
+        if(!this.comprovarBaldes(balda)) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+            this.objectes.add(newElement);
 
-        var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
-        this.objectes.add(newElement);
-        this.balda1 = true;
+        }
 
         /*if (x == 1 && y == 2 && !this.balda1) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
@@ -226,7 +250,7 @@ class mainState extends Phaser.State {
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
         this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
-        this.sortirObjectes();
+        this.configObjectes();
     }
 
     tirarObjectes(gat:Phaser.Sprite, objecte:Objecte) {
@@ -249,7 +273,7 @@ class mainState extends Phaser.State {
         this.game.physics.arcade.collide(this.baldes, this.gat);
         this.game.physics.arcade.collide(this.gat, this.objectes,this.tirarObjectes,null,this);//, this.tirarObjectes, null, this);
 
-
+        this.crearObjectes();
 
         this.movePlayer();
     }

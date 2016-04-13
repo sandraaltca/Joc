@@ -40,6 +40,11 @@ var mainState = (function (_super) {
         this.game.load.image('basura', 'assets/basura.png');
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
     };
+    mainState.prototype.configObjectes = function () {
+        this.objectes = this.add.group();
+        this.objectes.enableBody = true;
+        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+    };
     mainState.prototype.tipusObjecte = function () {
         var tipus = Math.floor((Math.random() * 6) + 1);
         var object;
@@ -61,17 +66,42 @@ var mainState = (function (_super) {
         return object;
     };
     mainState.prototype.comprovarBaldes = function (balda) {
-        if (balda == 1) {
+        var respota = true;
+        if (balda == 1 && !this.balda1) {
             this.balda1 = true;
+            respota = false;
         }
-        else if (balda = 2) {
+        else if (balda == 2 && !this.balda2) {
             this.balda2 = true;
+            respota = false;
         }
+        else if (balda == 3 && this.balda3) {
+            this.balda3 = true;
+            respota = false;
+        }
+        else if (balda == 4 && this.balda4) {
+            this.balda4 = true;
+            respota = false;
+        }
+        else if (balda == 5 && this.balda5) {
+            this.balda5 = true;
+            respota = false;
+        }
+        else if (balda == 6 && this.balda6) {
+            this.balda4 = true;
+            respota = false;
+        }
+        else if (balda == 7 && this.balda7) {
+            this.balda7 = true;
+            respota = false;
+        }
+        else if (balda == 8 && this.balda8) {
+            this.balda8 = true;
+            respota = false;
+        }
+        return respota;
     };
-    mainState.prototype.sortirObjectes = function () {
-        this.objectes = this.add.group();
-        this.objectes.enableBody = true;
-        this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
+    mainState.prototype.crearObjectes = function () {
         var posiciones = [
             new Point(1, 2), new Point(2, 0),
         ];
@@ -92,9 +122,10 @@ var mainState = (function (_super) {
         var balda = param["balda"];
         var altura = param["altura"];
         var objectType = this.tipusObjecte();
-        var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
-        this.objectes.add(newElement);
-        this.balda1 = true;
+        if (!this.comprovarBaldes(balda)) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+            this.objectes.add(newElement);
+        }
         /*if (x == 1 && y == 2 && !this.balda1) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
             this.objectes.add(newElement);
@@ -180,7 +211,7 @@ var mainState = (function (_super) {
         });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
         this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
-        this.sortirObjectes();
+        this.configObjectes();
     };
     mainState.prototype.tirarObjectes = function (gat, objecte) {
         console.log("entra");
@@ -196,6 +227,7 @@ var mainState = (function (_super) {
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
         this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this); //, this.tirarObjectes, null, this);
+        this.crearObjectes();
         this.movePlayer();
     };
     mainState.prototype.alliberarBlada = function (balda) {
