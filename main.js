@@ -7,6 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 //Example game: http://catscatscatscatscats.com/
 //http://www.phaser.io/news/2015/11/be-a-cat
 //74538f
+var Point = Phaser.Point;
 var mainState = (function (_super) {
     __extends(mainState, _super);
     function mainState() {
@@ -59,53 +60,75 @@ var mainState = (function (_super) {
         }
         return object;
     };
+    mainState.prototype.comprovarBaldes = function (balda) {
+        if (balda == 1) {
+            this.balda1 = true;
+        }
+        else if (balda = 2) {
+            this.balda2 = true;
+        }
+    };
     mainState.prototype.sortirObjectes = function () {
         this.objectes = this.add.group();
         this.objectes.enableBody = true;
         this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
-        var x = Math.floor((Math.random() * 8) + 1);
-        var y = Math.floor(Math.random() * 8);
+        var posiciones = [
+            new Point(1, 2), new Point(2, 0),
+        ];
+        var parametros = {
+            "1, 2": {
+                balda: 1,
+                altura: 15
+            },
+            "2, 0": {
+                balda: 2,
+                altura: 64
+            }
+        };
+        var pos = this.rnd.pick(posiciones);
+        var x = pos.x;
+        var y = pos.y;
+        var param = parametros[x + ", " + y];
+        var balda = param["balda"];
+        var altura = param["altura"];
         var objectType = this.tipusObjecte();
-        if (x == 1 && y == 2 && !this.balda1) {
+        var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+        this.objectes.add(newElement);
+        this.balda1 = true;
+        /*if (x == 1 && y == 2 && !this.balda1) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
             this.objectes.add(newElement);
             this.balda1 = true;
-        }
-        else if (x == 2 && y == 0 && !this.balda2) {
+        } else if (x == 2 && y == 0 && !this.balda2) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 2);
             this.objectes.add(newElement);
             this.balda2 = true;
-        }
-        else if (x == 2 && y == 4 && !this.balda3) {
+        } else if (x == 2 && y == 4 && !this.balda3) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 3);
             this.objectes.add(newElement);
             this.balda3 = true;
-        }
-        else if (x == 4 && y == 0 && !this.balda4) {
+
+        } else if (x == 4 && y == 0 && !this.balda4) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 4);
             this.objectes.add(newElement);
             this.balda4 = true;
-        }
-        else if (x == 4 && y == 4 && !this.balda5) {
+        } else if (x == 4 && y == 4 && !this.balda5) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 5);
             this.objectes.add(newElement);
             this.balda5 = true;
-        }
-        else if (x == 3 && y == 1 && !this.balda6) {
+        } else if (x == 3 && y == 1 && !this.balda6) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 6);
             this.objectes.add(newElement);
             this.balda6 = true;
-        }
-        else if (x == 3 && y == 2 && !this.balda7) {
+        } else if (x == 3 && y == 2 && !this.balda7) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 7);
             this.objectes.add(newElement);
             this.balda7 = true;
-        }
-        else if (x == 3 && y == 3 && !this.balda8) {
+        } else if (x == 3 && y == 3 && !this.balda8) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 8);
             this.objectes.add(newElement);
             this.balda8 = true;
-        }
+        }*/
     };
     mainState.prototype.configGat = function () {
         this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'gat');
@@ -150,11 +173,17 @@ var mainState = (function (_super) {
         this.configGat();
         // Cogemos los cursores para gestionar la entrada
         this.cursor = this.game.input.keyboard.createCursorKeys();
-        this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, { font: "25px Fixedsys", fill: "#fff", align: "center" });
+        this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, {
+            font: "25px Fixedsys",
+            fill: "#fff",
+            align: "center"
+        });
         this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
         this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
+        this.sortirObjectes();
     };
     mainState.prototype.tirarObjectes = function (gat, objecte) {
+        console.log("entra");
         var num = objecte.balda;
         objecte.kill();
         this.alliberarBlada(num);
@@ -166,11 +195,7 @@ var mainState = (function (_super) {
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
-        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-        if (this.contadorObjectes == 1) {
-            this.sortirObjectes();
-            this.contadorObjectes = 0;
-        }
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this); //, this.tirarObjectes, null, this);
         this.movePlayer();
     };
     mainState.prototype.alliberarBlada = function (balda) {
@@ -235,6 +260,7 @@ var Objecte = (function (_super) {
     function Objecte(game, x, y, key, balda) {
         _super.call(this, game, x, y, key, 0);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.immovable = true;
         this.height - 900;
         this.balda = balda;
     }
