@@ -65,44 +65,44 @@ var mainState = (function (_super) {
         this.objectes.physicsBodyType = Phaser.Physics.ARCADE;
         var x = Math.floor((Math.random() * 8) + 1);
         var y = Math.floor(Math.random() * 8);
-        var object = this.tipusObjecte();
+        var objectType = this.tipusObjecte();
         if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, object, 1);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
             this.objectes.add(newElement);
             this.balda1 = true;
         }
         else if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, object, 2);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 2);
             this.objectes.add(newElement);
             this.balda2 = true;
         }
         else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, object, 3);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 3);
             this.objectes.add(newElement);
             this.balda3 = true;
         }
         else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, object, 4);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 4);
             this.objectes.add(newElement);
             this.balda4 = true;
         }
         else if (x == 4 && y == 4 && !this.balda5) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, object, 5);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 5);
             this.objectes.add(newElement);
             this.balda5 = true;
         }
         else if (x == 3 && y == 1 && !this.balda6) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 6);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 6);
             this.objectes.add(newElement);
             this.balda6 = true;
         }
         else if (x == 3 && y == 2 && !this.balda7) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 7);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 7);
             this.objectes.add(newElement);
             this.balda7 = true;
         }
         else if (x == 3 && y == 3 && !this.balda8) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, object, 8);
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 8);
             this.objectes.add(newElement);
             this.balda8 = true;
         }
@@ -136,7 +136,7 @@ var mainState = (function (_super) {
         for (var x = 0; x < 4; x++) {
             for (var y = 0; y < 5; y++) {
                 if (x == 1 && y == 2 || x == 2 && y == 0 || x == 2 && y == 4 || x == 3 && y == 1 || x == 3 && y == 2 || x == 3 && y == 3) {
-                    var newElement = new Balda(this.game, y * this.ESPAIH, x * this.ESPAIV + 50, 'baldes');
+                    var newElement = new Balda(this.game, y * this.ESPAIH, x * this.ESPAIV + 50, 'baldes', 0);
                     this.baldes.add(newElement);
                 }
             }
@@ -154,21 +154,23 @@ var mainState = (function (_super) {
         this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
         this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
     };
+    mainState.prototype.tirarObjectes = function (gat, objecte) {
+        var num = objecte.balda;
+        objecte.kill();
+        this.alliberarBlada(num);
+        /* this.puntuacio=this.puntuacio+10;
+         this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;*/
+    };
     mainState.prototype.update = function () {
         _super.prototype.update.call(this);
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         if (this.contadorObjectes == 1) {
-            this.sortirObjectes();
-            this.sortirObjectes();
-            this.sortirObjectes();
-            this.sortirObjectes();
-            this.sortirObjectes();
             this.sortirObjectes();
             this.contadorObjectes = 0;
         }
-        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         this.movePlayer();
     };
     mainState.prototype.alliberarBlada = function (balda) {
@@ -196,13 +198,6 @@ var mainState = (function (_super) {
         else {
             this.balda8 = true;
         }
-    };
-    mainState.prototype.tirarObjectes = function (gat, objecte) {
-        var num = objecte.balda;
-        this.alliberarBlada(num);
-        this.puntuacio = this.puntuacio + 10;
-        this.CONTADORTIEMPO = this.CONTADORTIEMPO + 3;
-        objecte.kill();
     };
     mainState.prototype.movePlayer = function () {
         // Si pulsamos el cursor izquierdo
@@ -237,10 +232,9 @@ var mainState = (function (_super) {
 })(Phaser.State);
 var Objecte = (function (_super) {
     __extends(Objecte, _super);
-    function Objecte(game, x, y, key, frame, balda) {
-        _super.call(this, game, x, y, key, frame);
+    function Objecte(game, x, y, key, balda) {
+        _super.call(this, game, x, y, key, 0);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
-        this.body.immovable = true;
         this.height - 900;
         this.balda = balda;
     }
@@ -255,15 +249,15 @@ var Balda = (function (_super) {
     }
     return Balda;
 })(Phaser.Sprite);
-var ShooterGame = (function () {
-    function ShooterGame() {
+var KittyGame = (function () {
+    function KittyGame() {
         this.game = new Phaser.Game(800, 600, Phaser.AUTO, 'gameDiv');
         this.game.state.add('main', mainState);
         this.game.state.start('main');
     }
-    return ShooterGame;
+    return KittyGame;
 })();
 window.onload = function () {
-    var game = new ShooterGame();
+    var game = new KittyGame();
 };
 //# sourceMappingURL=main.js.map
