@@ -14,7 +14,7 @@ var mainState = (function (_super) {
         _super.apply(this, arguments);
         this.ESPAIH = 167;
         this.ESPAIV = 110;
-        this.CONTADORTIEMPO = 60;
+        this.CONTADORTIEMPO = 30;
         this.contadorObjectes = 0;
         this.puntuacio = 0;
         this.balda1 = false;
@@ -66,44 +66,42 @@ var mainState = (function (_super) {
         return object;
     };
     mainState.prototype.comprovarBaldes = function (balda) {
-        var respota = true;
+        var resposta = false;
         if (balda == 1 && !this.balda1) {
             this.balda1 = true;
-            respota = false;
         }
         else if (balda == 2 && !this.balda2) {
             this.balda2 = true;
-            respota = false;
         }
         else if (balda == 3 && this.balda3) {
             this.balda3 = true;
-            respota = false;
         }
         else if (balda == 4 && this.balda4) {
             this.balda4 = true;
-            respota = false;
         }
         else if (balda == 5 && this.balda5) {
             this.balda5 = true;
-            respota = false;
         }
         else if (balda == 6 && this.balda6) {
             this.balda4 = true;
-            respota = false;
         }
         else if (balda == 7 && this.balda7) {
             this.balda7 = true;
-            respota = false;
         }
         else if (balda == 8 && this.balda8) {
             this.balda8 = true;
-            respota = false;
         }
-        return respota;
+        else {
+            resposta = true;
+        }
+        return resposta;
     };
     mainState.prototype.crearObjectes = function () {
         var posiciones = [
             new Point(1, 2), new Point(2, 0),
+            new Point(2, 4), new Point(4, 0),
+            new Point(4, 4), new Point(3, 1),
+            new Point(3, 3), new Point(3, 2)
         ];
         var parametros = {
             "1, 2": {
@@ -113,6 +111,30 @@ var mainState = (function (_super) {
             "2, 0": {
                 balda: 2,
                 altura: 64
+            },
+            "2, 4": {
+                balda: 3,
+                altura: 64
+            },
+            "4,0": {
+                balda: 4,
+                altura: 90
+            },
+            "4, 4": {
+                balda: 5,
+                altura: 90
+            },
+            "3, 1": {
+                balda: 6,
+                altura: 80
+            },
+            "3, 2": {
+                balda: 7,
+                altura: 80
+            },
+            "3, 3": {
+                balda: 8,
+                altura: 80
             }
         };
         var pos = this.rnd.pick(posiciones);
@@ -126,40 +148,6 @@ var mainState = (function (_super) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
             this.objectes.add(newElement);
         }
-        /*if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
-            this.objectes.add(newElement);
-            this.balda1 = true;
-        } else if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 2);
-            this.objectes.add(newElement);
-            this.balda2 = true;
-        } else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 3);
-            this.objectes.add(newElement);
-            this.balda3 = true;
-
-        } else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 4);
-            this.objectes.add(newElement);
-            this.balda4 = true;
-        } else if (x == 4 && y == 4 && !this.balda5) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 5);
-            this.objectes.add(newElement);
-            this.balda5 = true;
-        } else if (x == 3 && y == 1 && !this.balda6) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 6);
-            this.objectes.add(newElement);
-            this.balda6 = true;
-        } else if (x == 3 && y == 2 && !this.balda7) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 7);
-            this.objectes.add(newElement);
-            this.balda7 = true;
-        } else if (x == 3 && y == 3 && !this.balda8) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 8);
-            this.objectes.add(newElement);
-            this.balda8 = true;
-        }*/
     };
     mainState.prototype.configGat = function () {
         this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'gat');
@@ -218,17 +206,21 @@ var mainState = (function (_super) {
         var num = objecte.balda;
         objecte.kill();
         this.alliberarBlada(num);
-        /* this.puntuacio=this.puntuacio+10;
-         this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;*/
     };
     mainState.prototype.update = function () {
         _super.prototype.update.call(this);
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
-        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this); //, this.tirarObjectes, null, this);
-        this.crearObjectes();
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         this.movePlayer();
+        if (this.contadorObjectes == 1) {
+            this.crearObjectes();
+            this.contadorObjectes = 0;
+        }
+        if (this.CONTADORTIEMPO == 0) {
+            this.tiempo.setText("Holiiii");
+        }
     };
     mainState.prototype.alliberarBlada = function (balda) {
         if (balda == 1) {

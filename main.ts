@@ -14,7 +14,7 @@ class mainState extends Phaser.State {
     ESPAIH = 167;
     ESPAIV = 110;
     tiempo:Phaser.Text;
-    CONTADORTIEMPO = 60;
+    CONTADORTIEMPO = 30;
     contadorObjectes = 0;
 
     puntuacio = 0;
@@ -68,45 +68,37 @@ class mainState extends Phaser.State {
         return object;
     }
     comprovarBaldes(balda:number):boolean{
-        var respota = true;
+        var resposta = false;
         if(balda==1 && !this.balda1){
             this.balda1=true;
-            respota = false;
         }else if(balda==2 && !this.balda2){
             this.balda2=true;
-            respota = false;
         }else if(balda==3 &&  this.balda3){
             this.balda3=true;
-            respota = false;
         }else if(balda==4 && this.balda4){
             this.balda4=true;
-            respota = false;
         }else if(balda==5 && this.balda5){
             this.balda5=true;
-            respota = false;
         }else if(balda==6 && this.balda6){
             this.balda4=true;
-            respota = false;
         }else if(balda==7 && this.balda7){
             this.balda7=true;
-            respota = false;
         }else if(balda==8 && this.balda8){
             this.balda8=true;
-            respota = false;
+        } else {
+            resposta = true;
         }
 
-        return respota;
+        return resposta;
     }
     crearObjectes() {
 
         var posiciones:Point[] = [
-            new Point(1, 2), new Point(2, 0), // Fila arriba
-            //new Point(2, 4), new Point(4, 0), // Fila central
-            //new Point(4, 4), new Point(3, 1), // Fila abajo
-            // new Point(4, 4), new Point(3, 1), // Fila abajo
-            // new Point(3, 3), new Point(3, 2), // Fila abajo
+            new Point(1, 2), new Point(2, 0),
+            new Point(2, 4), new Point(4, 0),
+            new Point(4, 4), new Point(3, 1),
+            new Point(3, 3), new Point(3, 2)
         ];
-
         var parametros = {
             "1, 2": {
                 balda: 1,
@@ -115,13 +107,35 @@ class mainState extends Phaser.State {
             "2, 0": {
                 balda: 2,
                 altura: 64
+            },
+            "2, 4": {
+                balda: 3,
+                altura: 64
+            },
+            "4,0": {
+                balda: 4,
+                altura: 90
+            },
+            "4, 4": {
+                balda: 5,
+                altura: 90
+            },
+            "3, 1": {
+                balda: 6,
+                altura: 80
+            },
+            "3, 2": {
+                balda: 7,
+                altura: 80
+            },
+            "3, 3": {
+                balda: 8,
+                altura: 80
             }
         };
-
         var pos = this.rnd.pick(posiciones);
         var x = pos.x;
         var y = pos.y;
-
         var param = parametros[x + ", " + y];
         var balda = param["balda"];
         var altura = param["altura"];
@@ -130,45 +144,7 @@ class mainState extends Phaser.State {
         if(!this.comprovarBaldes(balda)) {
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
             this.objectes.add(newElement);
-
         }
-
-        /*if (x == 1 && y == 2 && !this.balda1) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 15, objectType, 1);
-            this.objectes.add(newElement);
-            this.balda1 = true;
-        } else if (x == 2 && y == 0 && !this.balda2) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 2);
-            this.objectes.add(newElement);
-            this.balda2 = true;
-        } else if (x == 2 && y == 4 && !this.balda3) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 64, objectType, 3);
-            this.objectes.add(newElement);
-            this.balda3 = true;
-
-        } else if (x == 4 && y == 0 && !this.balda4) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 4);
-            this.objectes.add(newElement);
-            this.balda4 = true;
-        } else if (x == 4 && y == 4 && !this.balda5) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 90, objectType, 5);
-            this.objectes.add(newElement);
-            this.balda5 = true;
-        } else if (x == 3 && y == 1 && !this.balda6) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 6);
-            this.objectes.add(newElement);
-            this.balda6 = true;
-        } else if (x == 3 && y == 2 && !this.balda7) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 7);
-            this.objectes.add(newElement);
-            this.balda7 = true;
-        } else if (x == 3 && y == 3 && !this.balda8) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * 80, objectType, 8);
-            this.objectes.add(newElement);
-            this.balda8 = true;
-        }*/
-
-
     }
 
     configGat() {
@@ -230,8 +206,6 @@ class mainState extends Phaser.State {
                 }
             }
         }
-
-
     }
 
     create():void {
@@ -257,12 +231,7 @@ class mainState extends Phaser.State {
         console.log("entra");
         var num = objecte.balda;
         objecte.kill();
-
         this.alliberarBlada(num);
-
-
-        /* this.puntuacio=this.puntuacio+10;
-         this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;*/
 
     }
 
@@ -271,11 +240,16 @@ class mainState extends Phaser.State {
         this.game.physics.arcade.collide(this.gat, this.terradreta);
         this.game.physics.arcade.collide(this.gat, this.terraesquerra);
         this.game.physics.arcade.collide(this.baldes, this.gat);
-        this.game.physics.arcade.collide(this.gat, this.objectes,this.tirarObjectes,null,this);//, this.tirarObjectes, null, this);
-
-        this.crearObjectes();
-
+        this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
         this.movePlayer();
+        if (this.contadorObjectes == 1) {
+            this.crearObjectes();
+            this.contadorObjectes=0;
+        }
+        if(this.CONTADORTIEMPO==0){
+            this.tiempo.setText("Holiiii");
+        }
+
     }
 
 
@@ -357,7 +331,6 @@ class Balda extends Phaser.Sprite {
 
     }
 }
-
 class KittyGame {
     game:Phaser.Game;
 
