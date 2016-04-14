@@ -38,7 +38,10 @@ var mainState = (function (_super) {
         this.game.load.image('rellotge', 'assets/rellotge.png');
         this.game.load.image('flor', 'assets/flor.png');
         this.game.load.image('basura', 'assets/basura.png');
+        this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        //144
+        //159
     };
     /**
      * Metodes que utilitzaré al create.
@@ -54,16 +57,19 @@ var mainState = (function (_super) {
     /**
      * Metode configGat serveix per configurar el Sprite Gat
      */
+    // this.playerAnimationsLoad();
     mainState.prototype.configGat = function () {
-        this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'gat');
+        this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'kitty');
         // Cambiamos el "anchor" del jugador
         this.gat.anchor.setTo(0.5, 0.5);
+        this.playerAnimationsLoad();
         //Afegueixo fisica al gat.
         this.game.physics.arcade.enable(this.gat);
         // que colisione contra las paredes.
         this.gat.body.collideWorldBounds = true;
         // Agregamos gravedad al jugador
         this.gat.body.gravity.y = 500;
+        this.gat.animations.play('idEsperar');
     };
     /**
      * Metode configWorld serveix per configurar el mon
@@ -160,12 +166,7 @@ var mainState = (function (_super) {
      * Metode que crea objectes al atzar en una posició random
      */
     mainState.prototype.crearObjectes = function () {
-        var posiciones = [
-            new Point(1, 2), new Point(2, 0),
-            new Point(2, 4), new Point(4, 0),
-            new Point(4, 4), new Point(3, 1),
-            new Point(3, 3), new Point(3, 2)
-        ];
+        var posicions = [new Point(1, 2), new Point(2, 0), new Point(2, 4), new Point(4, 0), new Point(4, 4), new Point(3, 1), new Point(3, 3), new Point(3, 2)];
         var parametros = {
             "1, 2": {
                 balda: 1,
@@ -179,7 +180,7 @@ var mainState = (function (_super) {
                 balda: 3,
                 altura: 64
             },
-            "4,0": {
+            "4, 0": {
                 balda: 4,
                 altura: 90
             },
@@ -200,17 +201,23 @@ var mainState = (function (_super) {
                 altura: 80
             }
         };
-        var pos = this.rnd.pick(posiciones);
+        var pos = this.rnd.pick(posicions);
         var x = pos.x;
         var y = pos.y;
         var param = parametros[x + ", " + y];
         var balda = param["balda"];
         var altura = param["altura"];
         var objectType = this.tipusObjecte();
-        if (!this.comprovarBaldes(balda)) {
-            var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
-            this.objectes.add(newElement);
-        }
+        var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+        this.objectes.add(newElement);
+    };
+    mainState.prototype.playerAnimationsLoad = function () {
+        this.gat.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
+        this.gat.animations.add('idDreta', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
+        this.gat.animations.add('idEsquerra', [24, 25, 26, 27, 28, 29, 30, 31], 10, true);
+        // this.kitty.animations.add('walkLeft', [16,17,18,19,20,21,22,23], 10,true);
+        //this.kitty.animations.add('jumpRight', [24,25,26,27,28,29,30,31],10,true);
+        //this.kitty.animations.add('jumpLeft', [32,33,34,35,36,37,38,39], 10,true);
     };
     /**
      * Comprova si la balda està dispobible
@@ -286,19 +293,23 @@ var mainState = (function (_super) {
         if (this.cursor.left.isDown) {
             // Movemos al jugador a la izquierda
             this.gat.body.velocity.x = -200;
+            this.gat.animations.play('idEsquerra');
         }
         else if (this.cursor.right.isDown) {
             // Movemos al jugador a la derecha
             this.gat.body.velocity.x = 200;
+            this.gat.animations.play('idDreta');
         }
         else {
             // el jugador se para
             this.gat.body.velocity.x = 0;
+            this.gat.animations.play('idEsperar');
         }
         // Si pulsamos la flecha arriba y el jugador está tocando el suelo
         if (this.cursor.up.isDown) {
             // el jugador se mueve hacia arriba (salto)
             this.gat.body.velocity.y = -320;
+            this.gat.animations.play('idDreta');
         }
         if (this.CONTADORTIEMPO == 0) {
         }
@@ -332,7 +343,6 @@ var Objecte = (function (_super) {
         _super.call(this, game, x, y, key, 0);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.immovable = true;
-        this.height - 900;
         this.balda = balda;
     }
     return Objecte;
