@@ -261,28 +261,28 @@ var mainState = (function (_super) {
      */
     mainState.prototype.alliberarBlada = function (balda) {
         if (balda == 1) {
-            this.balda1 = true;
+            this.balda1 = false;
         }
         else if (balda == 2) {
-            this.balda2 = true;
+            this.balda2 = false;
         }
         else if (balda == 3) {
-            this.balda3 = true;
+            this.balda3 = false;
         }
         else if (balda == 4) {
-            this.balda4 = true;
+            this.balda4 = false;
         }
         else if (balda == 5) {
-            this.balda5 = true;
+            this.balda5 = false;
         }
         else if (balda == 6) {
-            this.balda6 = true;
+            this.balda6 = false;
         }
         else if (balda == 7) {
-            this.balda7 = true;
+            this.balda7 = false;
         }
         else {
-            this.balda8 = true;
+            this.balda8 = false;
         }
     };
     /***
