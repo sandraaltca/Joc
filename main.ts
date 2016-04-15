@@ -17,6 +17,7 @@ class mainState extends Phaser.State {
     tiempo:Phaser.Text;
     CONTADORTIEMPO = 30;
     contadorObjectes = 0;
+    gameOver = false;
     puntuacio = 0;
     balda1 = false;
     balda2 = false;
@@ -127,7 +128,6 @@ class mainState extends Phaser.State {
     temporitzadorPartida() {
 
         this.CONTADORTIEMPO--;
-        this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
     }
     /**
      * Metode configbaldes serveix per col·locar les baldes a la posició que l'hi toca
@@ -168,6 +168,7 @@ class mainState extends Phaser.State {
         var num = objecte.balda;
         objecte.kill();
         this.alliberarBlada(num);
+        this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;
 
     }
 
@@ -240,20 +241,19 @@ class mainState extends Phaser.State {
         var altura = param["altura"];
         var objectType = this.tipusObjecte();
 
+        if (!this.comprovarBaldes(balda)) {
 
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
             this.objectes.add(newElement);
+        }
 
     }
+
     playerAnimationsLoad(){
 
         this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
         this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
-       this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
-       // this.kitty.animations.add('walkLeft', [16,17,18,19,20,21,22,23], 10,true);
-        //this.kitty.animations.add('jumpRight', [24,25,26,27,28,29,30,31],10,true);
-        //this.kitty.animations.add('jumpLeft', [32,33,34,35,36,37,38,39], 10,true);
-
+        this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
 
     }
     /**
@@ -267,17 +267,17 @@ class mainState extends Phaser.State {
             this.balda1=true;
         }else if(balda==2 && !this.balda2){
             this.balda2=true;
-        }else if(balda==3 &&  this.balda3){
+        }else if(balda==3 &&  !this.balda3){
             this.balda3=true;
-        }else if(balda==4 && this.balda4){
+        }else if(balda==4 && !this.balda4){
             this.balda4=true;
-        }else if(balda==5 && this.balda5){
+        }else if(balda==5 && !this.balda5){
             this.balda5=true;
-        }else if(balda==6 && this.balda6){
+        }else if(balda==6 && !this.balda6){
             this.balda4=true;
-        }else if(balda==7 && this.balda7){
+        }else if(balda==7 && !this.balda7){
             this.balda7=true;
-        }else if(balda==8 && this.balda8){
+        }else if(balda==8 && !this.balda8){
             this.balda8=true;
         } else {
             resposta = true;
@@ -360,9 +360,14 @@ class mainState extends Phaser.State {
             this.crearObjectes();
             this.contadorObjectes=0;
         }
-        if(this.CONTADORTIEMPO==0){
-            this.tiempo.setText("Holiiii");
+
+        if(!this.gameOver){
+            this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
         }
+        if(this.CONTADORTIEMPO==0){
+            this.gameOver=true;
+        }
+
 
     }
 
