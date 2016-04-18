@@ -13,8 +13,9 @@ var ElMeuJoc;
             _super.call(this, 800, 600, Phaser.AUTO, "gameDiv");
             /// this.state.add("load", LoadState);
             // this.state.add("menu", MenuState);
+            this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
-            this.state.start("game");
+            this.state.start("menu");
         }
         return SimpleGame;
     })(Phaser.Game);
@@ -384,5 +385,42 @@ var ElMeuJoc;
         }
         return Balda;
     })(Phaser.Sprite);
+})(ElMeuJoc || (ElMeuJoc = {}));
+/**
+ * Created by 47419119l on 18/04/16.
+ */
+/**
+ * Created by sandra on 18/04/2016.
+ */
+/// <reference path="phaser/phaser.d.ts"/>
+//Example game: http://catscatscatscatscats.com/
+//http://www.phaser.io/news/2015/11/be-a-cat
+//74538f
+var ElMeuJoc;
+(function (ElMeuJoc) {
+    var menuStartGame = (function (_super) {
+        __extends(menuStartGame, _super);
+        function menuStartGame() {
+            _super.apply(this, arguments);
+        }
+        menuStartGame.prototype.preload = function () {
+            _super.prototype.preload.call(this);
+            this.game.load.image('play', 'assets/PlayButton.png');
+            this.load.spritesheet('Keys', 'assets/Keys.png', 102, 128);
+        };
+        menuStartGame.prototype.create = function () {
+            _super.prototype.create.call(this);
+            this.game.stage.backgroundColor = "#74538f";
+        };
+        menuStartGame.prototype.keysAnimatios = function () {
+            this.teclesMov.animations.add('moviment', [0, 1, 2, 3, 4], 10, true);
+            this.teclaEspai.animations.add('moviment', [5, 6], 10, true);
+        };
+        menuStartGame.prototype.update = function () {
+            _super.prototype.update.call(this);
+        };
+        return menuStartGame;
+    })(Phaser.State);
+    ElMeuJoc.menuStartGame = menuStartGame;
 })(ElMeuJoc || (ElMeuJoc = {}));
 //# sourceMappingURL=main.js.map

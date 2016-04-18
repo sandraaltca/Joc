@@ -10,9 +10,9 @@ module ElMeuJoc {
 
           /// this.state.add("load", LoadState);
            // this.state.add("menu", MenuState);
+            this.state.add("menu", menuStartGame);
             this.state.add("game", gameState);
-
-           this.state.start("game");
+            this.state.start("menu");
         }
     }
 }

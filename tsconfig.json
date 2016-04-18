@@ -9,6 +9,7 @@
   "files": [
     "main.ts",
     "gameState.ts",
+    "menuStartGame.ts",
     "phaser/phaser.d.ts"
   ]
 }
