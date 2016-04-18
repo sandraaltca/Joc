@@ -13,12 +13,18 @@ module  ElMeuJoc{
     export class menuStartGame extends Phaser.State {
 
         teclesMov:Phaser.Sprite;
+        butoStart:Phaser.Sprite;
         teclaEspai:Phaser.Sprite;
+        textIntro:Phaser.Text;
+
 
         preload():void {
            super.preload();
-            this.game.load.image('play', 'assets/PlayButton.png');
-            this.load.spritesheet('Keys', 'assets/Keys.png',102,128);
+
+            this.load.spritesheet('play', 'assets/PlayButton.png',1,1);
+            this.game.load.image('Keys', 'assets/Keys1.png');
+            this.game.load.image('Espai', 'assets/espai.png');
+
 
 
 
@@ -27,13 +33,21 @@ module  ElMeuJoc{
         create():void {
             super.create();
             this.game.stage.backgroundColor = "#74538f";
+            this.teclesMov = this.add.sprite(250,this.world.centerY , 'Keys');
+            this.teclesMov.anchor.setTo(0.5, 0.5);
+            this.teclaEspai = this.add.sprite(500,this.world.centerY+19,'Espai');
+            this.teclaEspai.anchor.setTo(0.5, 0.5);
+            this.textIntro = this.game.add.text(270, 100, "El Joc del Gatet ! ", {
+                font: "25px Fixedsys",
+                fill: "#fff",
+                align: "center"
+            });
+
+
 
 
         }
-        keysAnimatios(){
-            this.teclesMov.animations.add('moviment', [0,1,2,3,4], 10,true);
-            this.teclaEspai.animations.add('moviment', [5,6], 10,true);
-        }
+
 
 
         update():void {
