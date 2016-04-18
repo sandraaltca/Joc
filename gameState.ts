@@ -5,7 +5,6 @@
 //Example game: http://catscatscatscatscats.com/
 //http://www.phaser.io/news/2015/11/be-a-cat
 //74538f
-import Point = Phaser.Point;
 module  ElMeuJoc{
 
     export class gameState extends Phaser.State {

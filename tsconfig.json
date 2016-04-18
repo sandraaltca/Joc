@@ -3,9 +3,12 @@
     "module": "commonjs",
     "sourceMap": true,
     "target": "es5",
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "out": "main.js"
   },
   "files": [
-    "main.ts"
+    "main.ts",
+    "gameState.ts",
+    "phaser/phaser.d.ts"
   ]
 }

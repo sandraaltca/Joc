@@ -1,7 +1,7 @@
 /// <reference path="phaser/phaser.d.ts"/>
 import Point = Phaser.Point;
 
-module MyGame {
+module ElMeuJoc {
     export class SimpleGame extends Phaser.Game {
 
 
@@ -18,5 +18,5 @@ module MyGame {
 }
 
 window.onload = () => {
-    var game = new MyGame.SimpleGame();
+    var game = new ElMeuJoc.SimpleGame();
 };
