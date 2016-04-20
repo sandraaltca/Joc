@@ -18,7 +18,7 @@ module  ElMeuJoc{
         objectes:Phaser.Group;
         ESPAIH = 167;
         ESPAIV = 110;
-        tiempo:Phaser.Text;
+        tiempo:Phaser.BitmapText;
         CONTADORTIEMPO = 30;
         contadorObjectes = 0;
         gameOver = false;
@@ -34,6 +34,7 @@ module  ElMeuJoc{
 
         preload():void {
             super.preload();
+            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
             this.game.load.image('terraesquerra', 'assets/terraEsquerra.png');
             this.game.load.image('terradreta', 'assets/terra_dreta.png');
             this.game.load.image('baldainici', 'assets/baldaInici.png');
@@ -115,11 +116,13 @@ module  ElMeuJoc{
             )
             this.game.physics.arcade.enable(this.terradreta);
             this.terradreta.body.immovable = true;
-            this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, {
-                font: "25px Fixedsys",
-                fill: "#fff",
-                align: "center"
-            });
+            /*
+             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
+             this.textIntro.inputEnabled = true;
+             this.textIntro.input.enableDrag();
+             this.textIntro.anchor.setTo(0.5, 0.5);
+             */
+            this.tiempo = this.game.add.bitmapText(20, 10,'carrier_command', "Tiempo : " + this.CONTADORTIEMPO,15);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
             // Cogemos los cursores para gestionar la entrada

@@ -15,7 +15,7 @@ var ElMeuJoc;
             // this.state.add("menu", MenuState);
             this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
-            this.state.start("menu");
+            this.state.start("game");
         }
         return SimpleGame;
     })(Phaser.Game);
@@ -54,6 +54,7 @@ var ElMeuJoc;
         }
         gameState.prototype.preload = function () {
             _super.prototype.preload.call(this);
+            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
             this.game.load.image('terraesquerra', 'assets/terraEsquerra.png');
             this.game.load.image('terradreta', 'assets/terra_dreta.png');
             this.game.load.image('baldainici', 'assets/baldaInici.png');
@@ -111,11 +112,13 @@ var ElMeuJoc;
             this.terradreta = this.game.add.sprite(this.game.world.width - 250, this.game.world.height - 100, 'terradreta');
             this.game.physics.arcade.enable(this.terradreta);
             this.terradreta.body.immovable = true;
-            this.tiempo = this.game.add.text(20, 10, "Tiempo : " + this.CONTADORTIEMPO, {
-                font: "25px Fixedsys",
-                fill: "#fff",
-                align: "center"
-            });
+            /*
+             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
+             this.textIntro.inputEnabled = true;
+             this.textIntro.input.enableDrag();
+             this.textIntro.anchor.setTo(0.5, 0.5);
+             */
+            this.tiempo = this.game.add.bitmapText(20, 10, 'carrier_command', "Tiempo : " + this.CONTADORTIEMPO, 15);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
             // Cogemos los cursores para gestionar la entrada
@@ -417,7 +420,7 @@ var ElMeuJoc;
             this.teclesMov.anchor.setTo(0.5, 0.5);
             this.butoStart = this.add.sprite(this.world.centerX, this.world.centerY + 130, 'play');
             this.butoStart.anchor.setTo(0.5, 0.5);
-            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 34);
+            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 30);
             this.textIntro.inputEnabled = true;
             this.textIntro.input.enableDrag();
             this.textIntro.anchor.setTo(0.5, 0.5);
