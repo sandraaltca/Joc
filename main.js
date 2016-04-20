@@ -405,22 +405,31 @@ var ElMeuJoc;
         }
         menuStartGame.prototype.preload = function () {
             _super.prototype.preload.call(this);
-            this.load.spritesheet('play', 'assets/PlayButton.png', 1, 1);
+            this.load.spritesheet('play', 'assets/PlayButton.png', 123, 54);
             this.game.load.image('Keys', 'assets/Keys1.png');
             this.game.load.image('Espai', 'assets/espai.png');
+            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
         };
         menuStartGame.prototype.create = function () {
             _super.prototype.create.call(this);
             this.game.stage.backgroundColor = "#74538f";
-            this.teclesMov = this.add.sprite(250, this.world.centerY, 'Keys');
+            this.teclesMov = this.add.sprite(this.world.centerX, this.world.centerY, 'Keys');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.teclaEspai = this.add.sprite(500, this.world.centerY + 19, 'Espai');
-            this.teclaEspai.anchor.setTo(0.5, 0.5);
-            this.textIntro = this.game.add.text(270, 100, "El Joc del Gatet ! ", {
-                font: "25px Fixedsys",
-                fill: "#fff",
-                align: "center"
-            });
+            this.butoStart = this.add.sprite(this.world.centerX, this.world.centerY + 130, 'play');
+            this.butoStart.anchor.setTo(0.5, 0.5);
+            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 34);
+            this.textIntro.inputEnabled = true;
+            this.textIntro.input.enableDrag();
+            this.textIntro.anchor.setTo(0.5, 0.5);
+            this.botoAnimacio();
+            this.butoStart.animations.play('lila');
+        };
+        menuStartGame.prototype.empezar = function () {
+            this.game.state.start('play');
+        };
+        menuStartGame.prototype.botoAnimacio = function () {
+            this.butoStart.animations.add('lila', [0], 10, true);
+            this.butoStart.animations.add('blanc', [1], 10, true);
         };
         menuStartGame.prototype.update = function () {
             _super.prototype.update.call(this);
