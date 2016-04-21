@@ -8,8 +8,9 @@
   },
   "files": [
     "main.ts",
-    "gameState.ts",
     "menuStartGame.ts",
+    "LoadState.ts",
+    "gameState.ts",
     "phaser/phaser.d.ts"
   ]
 }

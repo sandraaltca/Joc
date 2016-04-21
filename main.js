@@ -11,11 +11,10 @@ var ElMeuJoc;
         __extends(SimpleGame, _super);
         function SimpleGame() {
             _super.call(this, 800, 600, Phaser.AUTO, "gameDiv");
-            /// this.state.add("load", LoadState);
-            // this.state.add("menu", MenuState);
+            this.state.add("load", ElMeuJoc.LoadState);
             this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
-            this.state.start("menu");
+            this.state.start("load");
         }
         return SimpleGame;
     })(Phaser.Game);
@@ -24,6 +23,83 @@ var ElMeuJoc;
 window.onload = function () {
     var game = new ElMeuJoc.SimpleGame();
 };
+/**
+ * Created by 47419119l on 18/04/16.
+ */
+/**
+ * Created by sandra on 18/04/2016.
+ */
+/// <reference path="phaser/phaser.d.ts"/>
+//Example game: http://catscatscatscatscats.com/
+//http://www.phaser.io/news/2015/11/be-a-cat
+//74538f
+var ElMeuJoc;
+(function (ElMeuJoc) {
+    var menuStartGame = (function (_super) {
+        __extends(menuStartGame, _super);
+        function menuStartGame() {
+            _super.apply(this, arguments);
+        }
+        menuStartGame.prototype.create = function () {
+            _super.prototype.create.call(this);
+            this.game.stage.backgroundColor = "#74538f";
+            this.teclesMov = this.add.sprite(this.world.centerX, this.world.centerY, 'Keys');
+            this.teclesMov.anchor.setTo(0.5, 0.5);
+            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 30);
+            this.textIntro.inputEnabled = true;
+            this.textIntro.input.enableDrag();
+            this.textIntro.anchor.setTo(0.5, 0.5);
+            this.cursor = this.game.input.keyboard.createCursorKeys();
+        };
+        menuStartGame.prototype.onClick = function () {
+            this.game.state.start("game");
+        };
+        return menuStartGame;
+    })(Phaser.State);
+    ElMeuJoc.menuStartGame = menuStartGame;
+})(ElMeuJoc || (ElMeuJoc = {}));
+var ElMeuJoc;
+(function (ElMeuJoc) {
+    var LoadState = (function (_super) {
+        __extends(LoadState, _super);
+        function LoadState() {
+            _super.apply(this, arguments);
+        }
+        LoadState.prototype.preload = function () {
+            _super.prototype.preload.call(this);
+            // Agregem un text de cargant
+            var etiquetaCargando = this.add.text(this.world.centerX, 150, 'cargando...', { font: '30px Arial', fill: '#ffffff' });
+            etiquetaCargando.anchor.setTo(0.5, 0.5);
+            // Mostrem la barra de proces
+            var progressBar = this.add.sprite(this.world.centerX, 200, 'progressBar');
+            progressBar.anchor.setTo(0.5, 0.5);
+            this.load.setPreloadSprite(progressBar);
+            // Precarguem els sprites
+            this.load.image('Keys', 'assets/Keys1.png');
+            this.load.image('Espai', 'assets/espai.png');
+            this.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
+            this.game.load.image('terraesquerra', 'assets/terraEsquerra.png');
+            this.game.load.image('terradreta', 'assets/terra_dreta.png');
+            this.game.load.image('baldainici', 'assets/baldaInici.png');
+            this.game.load.image('baldes', 'assets/balda.png');
+            this.game.load.image('gat', 'assets/gat_quiet.png');
+            this.load.image('teclat', 'assets/teclat.png');
+            this.load.image('llibre', 'assets/llibre1.png');
+            this.load.image('rellotge', 'assets/rellotge.png');
+            this.load.image('flor', 'assets/flor.png');
+            this.load.image('basura', 'assets/basura.png');
+            this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
+            //Activem la fisica al joc
+            this.physics.startSystem(Phaser.Physics.ARCADE);
+        };
+        LoadState.prototype.create = function () {
+            _super.prototype.create.call(this);
+            this.game.state.start('menu');
+        };
+        return LoadState;
+    })(Phaser.State);
+    ElMeuJoc.LoadState = LoadState;
+})(ElMeuJoc || (ElMeuJoc = {}));
 /**
  * Created by sandra on 18/04/2016.
  */
@@ -52,24 +128,6 @@ var ElMeuJoc;
             this.balda7 = false;
             this.balda8 = false;
         }
-        gameState.prototype.preload = function () {
-            _super.prototype.preload.call(this);
-            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
-            this.game.load.image('terraesquerra', 'assets/terraEsquerra.png');
-            this.game.load.image('terradreta', 'assets/terra_dreta.png');
-            this.game.load.image('baldainici', 'assets/baldaInici.png');
-            this.game.load.image('baldes', 'assets/balda.png');
-            this.game.load.image('gat', 'assets/gat_quiet.png');
-            this.game.load.image('teclat', 'assets/teclat.png');
-            this.game.load.image('llibre', 'assets/llibre1.png');
-            this.game.load.image('rellotge', 'assets/rellotge.png');
-            this.game.load.image('flor', 'assets/flor.png');
-            this.game.load.image('basura', 'assets/basura.png');
-            this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
-            this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            //144
-            //159
-        };
         /**
          * Metodes que utilitzaré al create.
          */
@@ -388,49 +446,5 @@ var ElMeuJoc;
         }
         return Balda;
     })(Phaser.Sprite);
-})(ElMeuJoc || (ElMeuJoc = {}));
-/**
- * Created by 47419119l on 18/04/16.
- */
-/**
- * Created by sandra on 18/04/2016.
- */
-/// <reference path="phaser/phaser.d.ts"/>
-//Example game: http://catscatscatscatscats.com/
-//http://www.phaser.io/news/2015/11/be-a-cat
-//74538f
-var ElMeuJoc;
-(function (ElMeuJoc) {
-    var menuStartGame = (function (_super) {
-        __extends(menuStartGame, _super);
-        function menuStartGame() {
-            _super.apply(this, arguments);
-            this.isOver = true;
-        }
-        menuStartGame.prototype.preload = function () {
-            _super.prototype.preload.call(this);
-            this.load.spritesheet('play', 'assets/PlayButton.png', 123, 54);
-            this.game.load.image('Keys', 'assets/Keys1.png');
-            this.game.load.image('Espai', 'assets/espai.png');
-            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
-        };
-        menuStartGame.prototype.create = function () {
-            _super.prototype.create.call(this);
-            this.game.stage.backgroundColor = "#74538f";
-            this.teclesMov = this.add.sprite(this.world.centerX, this.world.centerY, 'Keys');
-            this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.butoStart = this.add.button(this.world.centerX, this.world.centerY + 130, 'play', this.onClick, this, 1, 0, 0);
-            this.butoStart.anchor.setTo(0.5, 0.5);
-            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 30);
-            this.textIntro.inputEnabled = true;
-            this.textIntro.input.enableDrag();
-            this.textIntro.anchor.setTo(0.5, 0.5);
-        };
-        menuStartGame.prototype.onClick = function () {
-            this.game.state.start("game");
-        };
-        return menuStartGame;
-    })(Phaser.State);
-    ElMeuJoc.menuStartGame = menuStartGame;
 })(ElMeuJoc || (ElMeuJoc = {}));
 //# sourceMappingURL=main.js.map

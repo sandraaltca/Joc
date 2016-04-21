@@ -7,12 +7,10 @@ module ElMeuJoc {
 
         constructor() {
             super(800, 600, Phaser.AUTO, "gameDiv");
-
-          /// this.state.add("load", LoadState);
-           // this.state.add("menu", MenuState);
+            this.state.add("load", LoadState);
             this.state.add("menu", menuStartGame);
             this.state.add("game", gameState);
-            this.state.start("menu");
+            this.state.start("load");
         }
     }
 }

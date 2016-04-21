@@ -32,26 +32,7 @@ module  ElMeuJoc{
         balda7 = false;
         balda8 = false;
 
-        preload():void {
-            super.preload();
-            this.game.load.bitmapFont('carrier_command', 'assets/fonts/bitmapFonts/carrier_command.png', 'assets/fonts/bitmapFonts/carrier_command.xml');
-            this.game.load.image('terraesquerra', 'assets/terraEsquerra.png');
-            this.game.load.image('terradreta', 'assets/terra_dreta.png');
-            this.game.load.image('baldainici', 'assets/baldaInici.png');
-            this.game.load.image('baldes', 'assets/balda.png');
-            this.game.load.image('gat', 'assets/gat_quiet.png');
 
-            this.game.load.image('teclat', 'assets/teclat.png');
-            this.game.load.image('llibre', 'assets/llibre1.png');
-            this.game.load.image('rellotge', 'assets/rellotge.png');
-            this.game.load.image('flor', 'assets/flor.png');
-            this.game.load.image('basura', 'assets/basura.png');
-            this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
-            this.game.physics.startSystem(Phaser.Physics.ARCADE);
-
-            //144
-            //159
-        }
 
         /**
          * Metodes que utilitzaré al create.
