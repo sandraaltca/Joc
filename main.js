@@ -15,7 +15,7 @@ var ElMeuJoc;
             // this.state.add("menu", MenuState);
             this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
-            this.state.start("game");
+            this.state.start("menu");
         }
         return SimpleGame;
     })(Phaser.Game);
@@ -405,6 +405,7 @@ var ElMeuJoc;
         __extends(menuStartGame, _super);
         function menuStartGame() {
             _super.apply(this, arguments);
+            this.isOver = true;
         }
         menuStartGame.prototype.preload = function () {
             _super.prototype.preload.call(this);
@@ -418,24 +419,15 @@ var ElMeuJoc;
             this.game.stage.backgroundColor = "#74538f";
             this.teclesMov = this.add.sprite(this.world.centerX, this.world.centerY, 'Keys');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.butoStart = this.add.sprite(this.world.centerX, this.world.centerY + 130, 'play');
+            this.butoStart = this.add.button(this.world.centerX, this.world.centerY + 130, 'play', this.onClick, this, 1, 0, 0);
             this.butoStart.anchor.setTo(0.5, 0.5);
             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 30);
             this.textIntro.inputEnabled = true;
             this.textIntro.input.enableDrag();
             this.textIntro.anchor.setTo(0.5, 0.5);
-            this.botoAnimacio();
-            this.butoStart.animations.play('lila');
         };
-        menuStartGame.prototype.empezar = function () {
-            this.game.state.start('play');
-        };
-        menuStartGame.prototype.botoAnimacio = function () {
-            this.butoStart.animations.add('lila', [0], 10, true);
-            this.butoStart.animations.add('blanc', [1], 10, true);
-        };
-        menuStartGame.prototype.update = function () {
-            _super.prototype.update.call(this);
+        menuStartGame.prototype.onClick = function () {
+            this.game.state.start("game");
         };
         return menuStartGame;
     })(Phaser.State);

@@ -5401,7 +5401,7 @@ declare module Phaser {
 
 
         /**
-        * Destroys this DeviceButton, this disposes of the onDown, onUp and onFloat signals
+        * Destroys this DeviceButton, this disposes of the onDown, onClick and onFloat signals
         * and clears the parent and game references.
         */
         destroy(): void;
@@ -11158,7 +11158,7 @@ declare module Phaser {
         * Resets the state of this Key.
         * 
         * This sets isDown to false, isUp to true, resets the time to be the current time, and _enables_ the key.
-        * In addition, if it is a "hard reset", it clears clears any callbacks associated with the onDown and onUp events and removes the onHoldCallback.
+        * In addition, if it is a "hard reset", it clears clears any callbacks associated with the onDown and onClick events and removes the onHoldCallback.
         * 
         * @param hard A soft reset won't reset any events or callbacks; a hard reset will. - Default: true
         */

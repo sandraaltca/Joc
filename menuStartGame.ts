@@ -12,9 +12,9 @@ module  ElMeuJoc{
 
     export class menuStartGame extends Phaser.State {
 
-
+        isOver=true;
         teclesMov:Phaser.Sprite;
-        butoStart:Phaser.Sprite;
+        butoStart:Phaser.Button;
         textIntro:Phaser.BitmapText;
 
 
@@ -32,32 +32,17 @@ module  ElMeuJoc{
             this.game.stage.backgroundColor = "#74538f";
             this.teclesMov = this.add.sprite(this.world.centerX,this.world.centerY , 'Keys');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.butoStart = this.add.sprite(this.world.centerX,this.world.centerY+130,'play');
+            this.butoStart = this.add.button(this.world.centerX,this.world.centerY+130,'play',this.onClick, this, 1, 0, 0);
             this.butoStart.anchor.setTo(0.5, 0.5);
             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
             this.textIntro.inputEnabled = true;
             this.textIntro.input.enableDrag();
             this.textIntro.anchor.setTo(0.5, 0.5);
-            this.botoAnimacio();
-            this.butoStart.animations.play('lila');
+
 
         }
-
-        empezar():void {
-            this.game.state.start('play');
-        }
-        botoAnimacio():void{
-            this.butoStart.animations.add('lila', [0], 10,true);
-            this.butoStart.animations.add('blanc', [1], 10,true);
-
-        }
-
-
-
-        update():void {
-            super.update();
-
-
+       onClick():void {
+           this.game.state.start("game");
         }
 
 
