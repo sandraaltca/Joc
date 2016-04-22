@@ -11,9 +11,11 @@ var ElMeuJoc;
         __extends(SimpleGame, _super);
         function SimpleGame() {
             _super.call(this, 800, 600, Phaser.AUTO, "gameDiv");
+            this.scorePun = 0;
             this.state.add("load", ElMeuJoc.LoadState);
             this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
+            this.state.add("gameover", ElMeuJoc.Gameover);
             this.state.start("load");
         }
         return SimpleGame;
@@ -43,16 +45,20 @@ var ElMeuJoc;
         menuStartGame.prototype.create = function () {
             _super.prototype.create.call(this);
             this.game.stage.backgroundColor = "#74538f";
-            this.teclesMov = this.add.sprite(this.world.centerX, this.world.centerY, 'Keys');
+            this.teclesMov = this.add.sprite(this.world.centerX - 100, this.world.centerY, 'Keys');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'El joc del gatet !', 30);
-            this.textIntro.inputEnabled = true;
-            this.textIntro.input.enableDrag();
+            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'Sigues un gat !', 30);
             this.textIntro.anchor.setTo(0.5, 0.5);
             this.cursor = this.game.input.keyboard.createCursorKeys();
+            this.kitty = this.add.sprite(this.world.centerX, this.world.centerY - 25, 'kitty');
+            this.kitty.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
+            this.kitty.animations.play('idEsperar');
         };
-        menuStartGame.prototype.onClick = function () {
-            this.game.state.start("game");
+        menuStartGame.prototype.update = function () {
+            _super.prototype.update.call(this);
+            if (this.cursor.up.isDown) {
+                this.game.state.start("game");
+            }
         };
         return menuStartGame;
     })(Phaser.State);
@@ -67,6 +73,7 @@ var ElMeuJoc;
         }
         LoadState.prototype.preload = function () {
             _super.prototype.preload.call(this);
+            this.stage.backgroundColor = "#74538f";
             // Agregem un text de cargant
             var etiquetaCargando = this.add.text(this.world.centerX, 150, 'cargando...', { font: '30px Arial', fill: '#ffffff' });
             etiquetaCargando.anchor.setTo(0.5, 0.5);
@@ -89,6 +96,7 @@ var ElMeuJoc;
             this.load.image('flor', 'assets/flor.png');
             this.load.image('basura', 'assets/basura.png');
             this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
+            this.load.image('score', 'assets/ScoreBackground.png');
             //Activem la fisica al joc
             this.physics.startSystem(Phaser.Physics.ARCADE);
         };
@@ -99,6 +107,50 @@ var ElMeuJoc;
         return LoadState;
     })(Phaser.State);
     ElMeuJoc.LoadState = LoadState;
+})(ElMeuJoc || (ElMeuJoc = {}));
+/**
+ * Created by 47419119l on 18/04/16.
+ */
+/**
+ * Created by sandra on 18/04/2016.
+ */
+/// <reference path="phaser/phaser.d.ts"/>
+//Example game: http://catscatscatscatscats.com/
+//http://www.phaser.io/news/2015/11/be-a-cat
+//74538f
+var ElMeuJoc;
+(function (ElMeuJoc) {
+    var Gameover = (function (_super) {
+        __extends(Gameover, _super);
+        function Gameover() {
+            _super.apply(this, arguments);
+        }
+        Gameover.prototype.create = function () {
+            _super.prototype.create.call(this);
+            this.game.stage.backgroundColor = "#74538f";
+            this.cursor = this.game.input.keyboard.createCursorKeys();
+            var gameOverBac = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'score');
+            gameOverBac.anchor.setTo(0.5, 0.5);
+            var titol = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 180, 'carrier_command', "  Has sigut un gat! ", 18);
+            titol.anchor.setTo(0.5, 0.5);
+            var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 150, 'carrier_command', " Has tirat ", 15);
+            score1.anchor.setTo(0.5, 0.5);
+            var score = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 100, 'carrier_command', "0", 40);
+            score.anchor.setTo(0.5, 0.5);
+            var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 30, 'carrier_command', " coses. ", 15);
+            score1.anchor.setTo(0.5, 0.5);
+            var teclas = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY + 100, 'Keys');
+            teclas.anchor.setTo(0.5, 0.5);
+        };
+        Gameover.prototype.update = function () {
+            _super.prototype.update.call(this);
+            if (this.cursor.up.isDown) {
+                this.game.state.start("game");
+            }
+        };
+        return Gameover;
+    })(Phaser.State);
+    ElMeuJoc.Gameover = Gameover;
 })(ElMeuJoc || (ElMeuJoc = {}));
 /**
  * Created by sandra on 18/04/2016.
@@ -115,10 +167,10 @@ var ElMeuJoc;
             _super.apply(this, arguments);
             this.ESPAIH = 167;
             this.ESPAIV = 110;
-            this.CONTADORTIEMPO = 30;
-            this.contadorObjectes = 0;
+            this.CONTADORTIEMPO = 6;
             this.gameOver = false;
-            this.puntuacio = 0;
+            this.contadorObjectes = 0;
+            this.backgrndOvr = false;
             this.balda1 = false;
             this.balda2 = false;
             this.balda3 = false;
@@ -170,12 +222,6 @@ var ElMeuJoc;
             this.terradreta = this.game.add.sprite(this.game.world.width - 250, this.game.world.height - 100, 'terradreta');
             this.game.physics.arcade.enable(this.terradreta);
             this.terradreta.body.immovable = true;
-            /*
-             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
-             this.textIntro.inputEnabled = true;
-             this.textIntro.input.enableDrag();
-             this.textIntro.anchor.setTo(0.5, 0.5);
-             */
             this.tiempo = this.game.add.bitmapText(20, 10, 'carrier_command', "Tiempo : " + this.CONTADORTIEMPO, 15);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
@@ -223,7 +269,6 @@ var ElMeuJoc;
             var num = objecte.balda;
             objecte.kill();
             this.alliberarBlada(num);
-            this.CONTADORTIEMPO = this.CONTADORTIEMPO + 3;
         };
         /**
          *Metode que retorna un tipus de objecte al atzar.
@@ -412,16 +457,20 @@ var ElMeuJoc;
             this.game.physics.arcade.collide(this.gat, this.terraesquerra);
             this.game.physics.arcade.collide(this.baldes, this.gat);
             this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-            this.movePlayer();
-            if (this.contadorObjectes == 1) {
-                this.crearObjectes();
-                this.contadorObjectes = 0;
-            }
             if (!this.gameOver) {
                 this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
+                if (this.contadorObjectes == 1) {
+                    this.crearObjectes();
+                    this.contadorObjectes = 0;
+                }
+                this.movePlayer();
+            }
+            else {
+                this.game.state.start("gameover");
             }
             if (this.CONTADORTIEMPO == 0) {
                 this.gameOver = true;
+                this.backgrndOvr = true;
             }
         };
         return gameState;

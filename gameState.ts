@@ -8,10 +8,10 @@
 module  ElMeuJoc{
 
     export class gameState extends Phaser.State {
+        gameOverBac:Phaser.Sprite;
         cursor:Phaser.CursorKeys;
         terraesquerra:Phaser.Sprite;
         gat:Phaser.Sprite;
-        kitty:Phaser.Sprite;
         terradreta:Phaser.Sprite;
         baldainici:Phaser.Sprite;
         baldes:Phaser.Group;
@@ -19,10 +19,10 @@ module  ElMeuJoc{
         ESPAIH = 167;
         ESPAIV = 110;
         tiempo:Phaser.BitmapText;
-        CONTADORTIEMPO = 30;
-        contadorObjectes = 0;
+        CONTADORTIEMPO = 6;
         gameOver = false;
-        puntuacio = 0;
+        contadorObjectes=0;
+        backgrndOvr=false;
         balda1 = false;
         balda2 = false;
         balda3 = false;
@@ -31,6 +31,7 @@ module  ElMeuJoc{
         balda6 = false;
         balda7 = false;
         balda8 = false;
+
 
 
 
@@ -94,15 +95,9 @@ module  ElMeuJoc{
                 this.game.world.width - 250,
                 this.game.world.height - 100,
                 'terradreta'
-            )
+            );
             this.game.physics.arcade.enable(this.terradreta);
             this.terradreta.body.immovable = true;
-            /*
-             this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
-             this.textIntro.inputEnabled = true;
-             this.textIntro.input.enableDrag();
-             this.textIntro.anchor.setTo(0.5, 0.5);
-             */
             this.tiempo = this.game.add.bitmapText(20, 10,'carrier_command', "Tiempo : " + this.CONTADORTIEMPO,15);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorPartida, this);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
@@ -156,8 +151,6 @@ module  ElMeuJoc{
             var num = objecte.balda;
             objecte.kill();
             this.alliberarBlada(num);
-            this.CONTADORTIEMPO=this.CONTADORTIEMPO+3;
-
         }
 
         /**
@@ -238,11 +231,9 @@ module  ElMeuJoc{
         }
 
         playerAnimationsLoad(){
-
             this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
             this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
             this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
-
         }
         /**
          * Comprova si la balda està dispobible
@@ -320,7 +311,7 @@ module  ElMeuJoc{
                 this.gat.animations.play('idEsperar');
             }
             // Si pulsamos la flecha arriba y el jugador está tocando el suelo
-            if (this.cursor.up.isDown) {
+            if (this.cursor.up.isDown ) {
                 // el jugador se mueve hacia arriba (salto)
                 this.gat.body.velocity.y = -320;
                 this.gat.animations.play('idDreta');
@@ -337,23 +328,31 @@ module  ElMeuJoc{
         tempsObjectes() {
             this.contadorObjectes++;
         }
+
+
         update():void {
             super.update();
             this.game.physics.arcade.collide(this.gat, this.terradreta);
             this.game.physics.arcade.collide(this.gat, this.terraesquerra);
             this.game.physics.arcade.collide(this.baldes, this.gat);
             this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-            this.movePlayer();
-            if (this.contadorObjectes == 1) {
-                this.crearObjectes();
-                this.contadorObjectes=0;
-            }
 
             if(!this.gameOver){
                 this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
+                if (this.contadorObjectes == 1) {
+                    this.crearObjectes();
+                    this.contadorObjectes=0;
+                }
+                this.movePlayer();
+            }else{
+                this.game.state.start("gameover");
             }
+
             if(this.CONTADORTIEMPO==0){
                 this.gameOver=true;
+                this.backgrndOvr=true;
+
+
             }
 
 

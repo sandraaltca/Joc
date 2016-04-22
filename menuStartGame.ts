@@ -13,28 +13,33 @@ module  ElMeuJoc{
     export class menuStartGame extends Phaser.State {
 
         teclesMov:Phaser.Sprite;
+        kitty:Phaser.Sprite;
         textIntro:Phaser.BitmapText;
         cursor:Phaser.CursorKeys;
 
         create():void {
             super.create();
             this.game.stage.backgroundColor = "#74538f";
-            this.teclesMov = this.add.sprite(this.world.centerX,this.world.centerY , 'Keys');
+            this.teclesMov = this.add.sprite(this.world.centerX-100,this.world.centerY , 'Keys');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-
-            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','El joc del gatet !',30);
-            this.textIntro.inputEnabled = true;
-            this.textIntro.input.enableDrag();
+            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command','Sigues un gat !',30);
             this.textIntro.anchor.setTo(0.5, 0.5);
             this.cursor = this.game.input.keyboard.createCursorKeys();
+            this.kitty = this.add.sprite(this.world.centerX,this.world.centerY-25 , 'kitty');
 
-
+            this.kitty.animations.add('idEsperar', [0,1,2,3], 10,true);
+            this.kitty.animations.play('idEsperar');
 
         }
-       onClick():void {
-           this.game.state.start("game");
-        }
 
+
+        update():void {
+            super.update();
+            if(this.cursor.up.isDown) {
+                this.game.state.start("game");
+            }
+
+        }
 
     }
 

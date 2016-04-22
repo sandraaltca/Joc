@@ -4,6 +4,7 @@ module ElMeuJoc {
         preload():void {
             super.preload();
 
+            this.stage.backgroundColor = "#74538f";
             // Agregem un text de cargant
             var etiquetaCargando = this.add.text(this.world.centerX, 150, 'cargando...',
                 {font: '30px Arial', fill: '#ffffff'});
@@ -29,7 +30,9 @@ module ElMeuJoc {
             this.load.image('flor', 'assets/flor.png');
             this.load.image('basura', 'assets/basura.png');
             this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
-            
+            this.load.image('score', 'assets/ScoreBackground.png');
+
+
             //Activem la fisica al joc
             this.physics.startSystem(Phaser.Physics.ARCADE);
 
