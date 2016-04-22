@@ -96,7 +96,11 @@ module  ElMeuJoc{
             // Cogemos los cursores para gestionar la entrada
             this.cursor = this.game.input.keyboard.createCursorKeys();
         }
-
+        playerAnimationsLoad(){
+            this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
+            this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
+            this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
+        }
         /**
          * Contador de la partida.
          */
@@ -140,7 +144,6 @@ module  ElMeuJoc{
          * @param objecte - Objectes que hi ha a les baldes
          */
         tirarObjectes(gat:Phaser.Sprite, objecte:Objecte) {
-            var num = objecte.balda;
             this.score = this.score+1;
             objecte.kill();
         }
@@ -220,11 +223,7 @@ module  ElMeuJoc{
 
         }
 
-        playerAnimationsLoad(){
-            this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
-            this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
-            this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
-        }
+
 
         /***
          * Metode per moure al jugador (gat)
@@ -267,6 +266,29 @@ module  ElMeuJoc{
             this.contadorObjectes++;
         }
 
+
+        update():void {
+            super.update();
+            this.game.physics.arcade.collide(this.gat, this.terradreta);
+            this.game.physics.arcade.collide(this.gat, this.terraesquerra);
+            this.game.physics.arcade.collide(this.baldes, this.gat);
+            this.game.physics.arcade.overlap(this.gat, this.objectes, this.tirarObjectes, null, this);
+            if(!this.gameOver){
+                this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
+                if (this.contadorObjectes == 2) {
+                    this.crearObjectes();
+                    this.contadorObjectes=0;
+                }
+                this.movePlayer();
+            }else{
+                this.gameOverFuncio();
+
+            }
+            if(this.CONTADORTIEMPO==0){
+                this.gameOver=true;
+                this.backgrndOvr=true;
+            }
+        }
         gameOverFuncio(){
             if(this.backgrndOvr) {
 
@@ -320,34 +342,11 @@ module  ElMeuJoc{
 
 
         }
-        update():void {
-            super.update();
-            this.game.physics.arcade.collide(this.gat, this.terradreta);
-            this.game.physics.arcade.collide(this.gat, this.terraesquerra);
-            this.game.physics.arcade.collide(this.baldes, this.gat);
-            this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-            if(!this.gameOver){
-                this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
-                if (this.contadorObjectes == 1) {
-                    this.crearObjectes();
-                    this.contadorObjectes=0;
-                }
-                this.movePlayer();
-            }else{
-                this.gameOverFuncio();
-
-            }
-            if(this.CONTADORTIEMPO==0){
-                this.gameOver=true;
-                this.backgrndOvr=true;
-            }
-        }
-
     }
     class Objecte extends Phaser.Sprite {
         balda;
-
-        temporitObjecteKill=2;
+        temporitObjecteKill=3;
+        game:Phaser.Game;
 
         constructor(game:Phaser.Game, x:number, y:number, key:string, balda:number) {
             super(game, x, y, key, 0);
@@ -355,6 +354,7 @@ module  ElMeuJoc{
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.immovable = true;
             this.balda = balda;
+            this.game = game;
         }
         temporitzadorObjecte()
         {
@@ -363,6 +363,7 @@ module  ElMeuJoc{
         update():void{
             super.update();
             if(this.temporitObjecteKill==0){
+                this.game.add.tween(this).to( { alpha: 0 }, 2000, Phaser.Easing.Bounce.Out, true);
                 this.kill();
             }
         }

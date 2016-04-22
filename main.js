@@ -176,6 +176,11 @@ var ElMeuJoc;
             // Cogemos los cursores para gestionar la entrada
             this.cursor = this.game.input.keyboard.createCursorKeys();
         };
+        gameState.prototype.playerAnimationsLoad = function () {
+            this.gat.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
+            this.gat.animations.add('idDreta', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
+            this.gat.animations.add('idEsquerra', [24, 25, 26, 27, 28, 29, 30, 31], 10, true);
+        };
         /**
          * Contador de la partida.
          */
@@ -214,7 +219,6 @@ var ElMeuJoc;
          * @param objecte - Objectes que hi ha a les baldes
          */
         gameState.prototype.tirarObjectes = function (gat, objecte) {
-            var num = objecte.balda;
             this.score = this.score + 1;
             objecte.kill();
         };
@@ -291,11 +295,6 @@ var ElMeuJoc;
             var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
             this.objectes.add(newElement);
         };
-        gameState.prototype.playerAnimationsLoad = function () {
-            this.gat.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
-            this.gat.animations.add('idDreta', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
-            this.gat.animations.add('idEsquerra', [24, 25, 26, 27, 28, 29, 30, 31], 10, true);
-        };
         /***
          * Metode per moure al jugador (gat)
          */
@@ -331,6 +330,28 @@ var ElMeuJoc;
         gameState.prototype.tempsObjectes = function () {
             this.contadorObjectes++;
         };
+        gameState.prototype.update = function () {
+            _super.prototype.update.call(this);
+            this.game.physics.arcade.collide(this.gat, this.terradreta);
+            this.game.physics.arcade.collide(this.gat, this.terraesquerra);
+            this.game.physics.arcade.collide(this.baldes, this.gat);
+            this.game.physics.arcade.overlap(this.gat, this.objectes, this.tirarObjectes, null, this);
+            if (!this.gameOver) {
+                this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
+                if (this.contadorObjectes == 2) {
+                    this.crearObjectes();
+                    this.contadorObjectes = 0;
+                }
+                this.movePlayer();
+            }
+            else {
+                this.gameOverFuncio();
+            }
+            if (this.CONTADORTIEMPO == 0) {
+                this.gameOver = true;
+                this.backgrndOvr = true;
+            }
+        };
         gameState.prototype.gameOverFuncio = function () {
             if (this.backgrndOvr) {
                 this.gameOverBac = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'score');
@@ -355,28 +376,6 @@ var ElMeuJoc;
                 this.backgrndOvr = false;
             }
         };
-        gameState.prototype.update = function () {
-            _super.prototype.update.call(this);
-            this.game.physics.arcade.collide(this.gat, this.terradreta);
-            this.game.physics.arcade.collide(this.gat, this.terraesquerra);
-            this.game.physics.arcade.collide(this.baldes, this.gat);
-            this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-            if (!this.gameOver) {
-                this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
-                if (this.contadorObjectes == 1) {
-                    this.crearObjectes();
-                    this.contadorObjectes = 0;
-                }
-                this.movePlayer();
-            }
-            else {
-                this.gameOverFuncio();
-            }
-            if (this.CONTADORTIEMPO == 0) {
-                this.gameOver = true;
-                this.backgrndOvr = true;
-            }
-        };
         return gameState;
     })(Phaser.State);
     ElMeuJoc.gameState = gameState;
@@ -384,11 +383,12 @@ var ElMeuJoc;
         __extends(Objecte, _super);
         function Objecte(game, x, y, key, balda) {
             _super.call(this, game, x, y, key, 0);
-            this.temporitObjecteKill = 2;
+            this.temporitObjecteKill = 3;
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorObjecte, this);
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.immovable = true;
             this.balda = balda;
+            this.game = game;
         }
         Objecte.prototype.temporitzadorObjecte = function () {
             this.temporitObjecteKill = this.temporitObjecteKill - 1;
@@ -396,6 +396,7 @@ var ElMeuJoc;
         Objecte.prototype.update = function () {
             _super.prototype.update.call(this);
             if (this.temporitObjecteKill == 0) {
+                this.game.add.tween(this).to({ alpha: 0 }, 2000, Phaser.Easing.Bounce.Out, true);
                 this.kill();
             }
         };
