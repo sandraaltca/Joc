@@ -19,18 +19,10 @@ module  ElMeuJoc{
         ESPAIH = 167;
         ESPAIV = 110;
         tiempo:Phaser.BitmapText;
-        CONTADORTIEMPO = 6;
+        CONTADORTIEMPO = 30;
         gameOver = false;
         contadorObjectes=0;
         backgrndOvr=false;
-        balda1 = false;
-        balda2 = false;
-        balda3 = false;
-        balda4 = false;
-        balda5 = false;
-        balda6 = false;
-        balda7 = false;
-        balda8 = false;
         score=0;
 
 
@@ -149,9 +141,8 @@ module  ElMeuJoc{
          */
         tirarObjectes(gat:Phaser.Sprite, objecte:Objecte) {
             var num = objecte.balda;
-            this.score = this.score+10;
+            this.score = this.score+1;
             objecte.kill();
-            this.alliberarBlada(num);
         }
 
         /**
@@ -223,11 +214,9 @@ module  ElMeuJoc{
             var altura = param["altura"];
             var objectType = this.tipusObjecte();
 
-            if (!this.comprovarBaldes(balda)) {
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+            this.objectes.add(newElement);
 
-                var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
-                this.objectes.add(newElement);
-            }
 
         }
 
@@ -235,58 +224,6 @@ module  ElMeuJoc{
             this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
             this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
             this.gat.animations.add('idEsquerra', [24,25,26,27,28,29,30,31], 10,true);
-        }
-        /**
-         * Comprova si la balda està dispobible
-         * @param balda id de la balda
-         * @returns {boolean} false si està disponible true si esta ocupada.
-         */
-        comprovarBaldes(balda:number):boolean{
-            var resposta = false;
-            if(balda==1 && !this.balda1){
-                this.balda1=true;
-            }else if(balda==2 && !this.balda2){
-                this.balda2=true;
-            }else if(balda==3 &&  !this.balda3){
-                this.balda3=true;
-            }else if(balda==4 && !this.balda4){
-                this.balda4=true;
-            }else if(balda==5 && !this.balda5){
-                this.balda5=true;
-            }else if(balda==6 && !this.balda6){
-                this.balda4=true;
-            }else if(balda==7 && !this.balda7){
-                this.balda7=true;
-            }else if(balda==8 && !this.balda8){
-                this.balda8=true;
-            } else {
-                resposta = true;
-            }
-            return resposta;
-        }
-
-        /**
-         * Possa a true la balda que l'hi introduïm
-         * @param balda número de la balda
-         */
-        alliberarBlada(balda:number) {
-            if (balda == 1) {
-                this.balda1 = false;
-            } else if (balda == 2) {
-                this.balda2 = false;
-            } else if (balda == 3) {
-                this.balda3 = false;
-            } else if (balda == 4) {
-                this.balda4 = false;
-            } else if (balda == 5) {
-                this.balda5 = false;
-            } else if (balda == 6) {
-                this.balda6 = false;
-            } else if (balda == 7) {
-                this.balda7 = false;
-            } else {
-                this.balda8 = false;
-            }
         }
 
         /***
@@ -379,14 +316,6 @@ module  ElMeuJoc{
                 this.CONTADORTIEMPO=30;
                 this.gameOver = false;
                 this.backgrndOvr=false;
-                this.balda1 = false;
-                this.balda2 = false;
-                this.balda3 = false;
-                this.balda4 = false;
-                this.balda5 = false;
-                this.balda6 = false;
-                this.balda7 = false;
-                this.balda8 = false;
             }
 
 
@@ -397,7 +326,6 @@ module  ElMeuJoc{
             this.game.physics.arcade.collide(this.gat, this.terraesquerra);
             this.game.physics.arcade.collide(this.baldes, this.gat);
             this.game.physics.arcade.collide(this.gat, this.objectes, this.tirarObjectes, null, this);
-
             if(!this.gameOver){
                 this.tiempo.setText("Tiempo : " + this.CONTADORTIEMPO);
                 if (this.contadorObjectes == 1) {
@@ -409,28 +337,34 @@ module  ElMeuJoc{
                 this.gameOverFuncio();
 
             }
-
             if(this.CONTADORTIEMPO==0){
                 this.gameOver=true;
                 this.backgrndOvr=true;
-
-
             }
-
-
         }
-
 
     }
     class Objecte extends Phaser.Sprite {
         balda;
 
+        temporitObjecteKill=2;
+
         constructor(game:Phaser.Game, x:number, y:number, key:string, balda:number) {
             super(game, x, y, key, 0);
-
+            this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorObjecte, this);
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.immovable = true;
             this.balda = balda;
+        }
+        temporitzadorObjecte()
+        {
+            this.temporitObjecteKill=this.temporitObjecteKill-1;
+        }
+        update():void{
+            super.update();
+            if(this.temporitObjecteKill==0){
+                this.kill();
+            }
         }
     }
     class Balda extends Phaser.Sprite {

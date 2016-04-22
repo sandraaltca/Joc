@@ -122,18 +122,10 @@ var ElMeuJoc;
             _super.apply(this, arguments);
             this.ESPAIH = 167;
             this.ESPAIV = 110;
-            this.CONTADORTIEMPO = 6;
+            this.CONTADORTIEMPO = 30;
             this.gameOver = false;
             this.contadorObjectes = 0;
             this.backgrndOvr = false;
-            this.balda1 = false;
-            this.balda2 = false;
-            this.balda3 = false;
-            this.balda4 = false;
-            this.balda5 = false;
-            this.balda6 = false;
-            this.balda7 = false;
-            this.balda8 = false;
             this.score = 0;
         }
         /**
@@ -223,9 +215,8 @@ var ElMeuJoc;
          */
         gameState.prototype.tirarObjectes = function (gat, objecte) {
             var num = objecte.balda;
-            this.score = this.score + 10;
+            this.score = this.score + 1;
             objecte.kill();
-            this.alliberarBlada(num);
         };
         /**
          *Metode que retorna un tipus de objecte al atzar.
@@ -297,81 +288,13 @@ var ElMeuJoc;
             var balda = param["balda"];
             var altura = param["altura"];
             var objectType = this.tipusObjecte();
-            if (!this.comprovarBaldes(balda)) {
-                var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
-                this.objectes.add(newElement);
-            }
+            var newElement = new Objecte(this.game, y * this.ESPAIH, x * altura, objectType, balda);
+            this.objectes.add(newElement);
         };
         gameState.prototype.playerAnimationsLoad = function () {
             this.gat.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
             this.gat.animations.add('idDreta', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
             this.gat.animations.add('idEsquerra', [24, 25, 26, 27, 28, 29, 30, 31], 10, true);
-        };
-        /**
-         * Comprova si la balda està dispobible
-         * @param balda id de la balda
-         * @returns {boolean} false si està disponible true si esta ocupada.
-         */
-        gameState.prototype.comprovarBaldes = function (balda) {
-            var resposta = false;
-            if (balda == 1 && !this.balda1) {
-                this.balda1 = true;
-            }
-            else if (balda == 2 && !this.balda2) {
-                this.balda2 = true;
-            }
-            else if (balda == 3 && !this.balda3) {
-                this.balda3 = true;
-            }
-            else if (balda == 4 && !this.balda4) {
-                this.balda4 = true;
-            }
-            else if (balda == 5 && !this.balda5) {
-                this.balda5 = true;
-            }
-            else if (balda == 6 && !this.balda6) {
-                this.balda4 = true;
-            }
-            else if (balda == 7 && !this.balda7) {
-                this.balda7 = true;
-            }
-            else if (balda == 8 && !this.balda8) {
-                this.balda8 = true;
-            }
-            else {
-                resposta = true;
-            }
-            return resposta;
-        };
-        /**
-         * Possa a true la balda que l'hi introduïm
-         * @param balda número de la balda
-         */
-        gameState.prototype.alliberarBlada = function (balda) {
-            if (balda == 1) {
-                this.balda1 = false;
-            }
-            else if (balda == 2) {
-                this.balda2 = false;
-            }
-            else if (balda == 3) {
-                this.balda3 = false;
-            }
-            else if (balda == 4) {
-                this.balda4 = false;
-            }
-            else if (balda == 5) {
-                this.balda5 = false;
-            }
-            else if (balda == 6) {
-                this.balda6 = false;
-            }
-            else if (balda == 7) {
-                this.balda7 = false;
-            }
-            else {
-                this.balda8 = false;
-            }
         };
         /***
          * Metode per moure al jugador (gat)
@@ -430,14 +353,6 @@ var ElMeuJoc;
                 this.CONTADORTIEMPO = 30;
                 this.gameOver = false;
                 this.backgrndOvr = false;
-                this.balda1 = false;
-                this.balda2 = false;
-                this.balda3 = false;
-                this.balda4 = false;
-                this.balda5 = false;
-                this.balda6 = false;
-                this.balda7 = false;
-                this.balda8 = false;
             }
         };
         gameState.prototype.update = function () {
@@ -469,10 +384,21 @@ var ElMeuJoc;
         __extends(Objecte, _super);
         function Objecte(game, x, y, key, balda) {
             _super.call(this, game, x, y, key, 0);
+            this.temporitObjecteKill = 2;
+            this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorObjecte, this);
             this.game.physics.enable(this, Phaser.Physics.ARCADE);
             this.body.immovable = true;
             this.balda = balda;
         }
+        Objecte.prototype.temporitzadorObjecte = function () {
+            this.temporitObjecteKill = this.temporitObjecteKill - 1;
+        };
+        Objecte.prototype.update = function () {
+            _super.prototype.update.call(this);
+            if (this.temporitObjecteKill == 0) {
+                this.kill();
+            }
+        };
         return Objecte;
     })(Phaser.Sprite);
     var Balda = (function (_super) {
