@@ -15,7 +15,6 @@ var ElMeuJoc;
             this.state.add("load", ElMeuJoc.LoadState);
             this.state.add("menu", ElMeuJoc.menuStartGame);
             this.state.add("game", ElMeuJoc.gameState);
-            this.state.add("gameover", ElMeuJoc.Gameover);
             this.state.start("load");
         }
         return SimpleGame;
@@ -109,50 +108,6 @@ var ElMeuJoc;
     ElMeuJoc.LoadState = LoadState;
 })(ElMeuJoc || (ElMeuJoc = {}));
 /**
- * Created by 47419119l on 18/04/16.
- */
-/**
- * Created by sandra on 18/04/2016.
- */
-/// <reference path="phaser/phaser.d.ts"/>
-//Example game: http://catscatscatscatscats.com/
-//http://www.phaser.io/news/2015/11/be-a-cat
-//74538f
-var ElMeuJoc;
-(function (ElMeuJoc) {
-    var Gameover = (function (_super) {
-        __extends(Gameover, _super);
-        function Gameover() {
-            _super.apply(this, arguments);
-        }
-        Gameover.prototype.create = function () {
-            _super.prototype.create.call(this);
-            this.game.stage.backgroundColor = "#74538f";
-            this.cursor = this.game.input.keyboard.createCursorKeys();
-            var gameOverBac = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'score');
-            gameOverBac.anchor.setTo(0.5, 0.5);
-            var titol = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 180, 'carrier_command', "  Has sigut un gat! ", 18);
-            titol.anchor.setTo(0.5, 0.5);
-            var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 150, 'carrier_command', " Has tirat ", 15);
-            score1.anchor.setTo(0.5, 0.5);
-            var score = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 100, 'carrier_command', "0", 40);
-            score.anchor.setTo(0.5, 0.5);
-            var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 30, 'carrier_command', " coses. ", 15);
-            score1.anchor.setTo(0.5, 0.5);
-            var teclas = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY + 100, 'Keys');
-            teclas.anchor.setTo(0.5, 0.5);
-        };
-        Gameover.prototype.update = function () {
-            _super.prototype.update.call(this);
-            if (this.cursor.up.isDown) {
-                this.game.state.start("game");
-            }
-        };
-        return Gameover;
-    })(Phaser.State);
-    ElMeuJoc.Gameover = Gameover;
-})(ElMeuJoc || (ElMeuJoc = {}));
-/**
  * Created by sandra on 18/04/2016.
  */
 /// <reference path="phaser/phaser.d.ts"/>
@@ -179,6 +134,7 @@ var ElMeuJoc;
             this.balda6 = false;
             this.balda7 = false;
             this.balda8 = false;
+            this.score = 0;
         }
         /**
          * Metodes que utilitzaré al create.
@@ -267,6 +223,7 @@ var ElMeuJoc;
          */
         gameState.prototype.tirarObjectes = function (gat, objecte) {
             var num = objecte.balda;
+            this.score = this.score + 10;
             objecte.kill();
             this.alliberarBlada(num);
         };
@@ -451,6 +408,38 @@ var ElMeuJoc;
         gameState.prototype.tempsObjectes = function () {
             this.contadorObjectes++;
         };
+        gameState.prototype.gameOverFuncio = function () {
+            if (this.backgrndOvr) {
+                this.gameOverBac = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'score');
+                this.gameOverBac.anchor.setTo(0.5, 0.5);
+                var titol = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 180, 'carrier_command', "  Has sigut un gat! ", 18);
+                titol.anchor.setTo(0.5, 0.5);
+                var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 150, 'carrier_command', " Has tirat ", 15);
+                score1.anchor.setTo(0.5, 0.5);
+                var score = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 100, 'carrier_command', "" + this.score, 40);
+                score.anchor.setTo(0.5, 0.5);
+                var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 30, 'carrier_command', " coses. ", 15);
+                score1.anchor.setTo(0.5, 0.5);
+                var teclas = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY + 100, 'Keys');
+                teclas.anchor.setTo(0.5, 0.5);
+                this.backgrndOvr = false;
+            }
+            if (this.cursor.up.isDown) {
+                this.game.state.restart();
+                this.contadorObjectes = 0;
+                this.CONTADORTIEMPO = 30;
+                this.gameOver = false;
+                this.backgrndOvr = false;
+                this.balda1 = false;
+                this.balda2 = false;
+                this.balda3 = false;
+                this.balda4 = false;
+                this.balda5 = false;
+                this.balda6 = false;
+                this.balda7 = false;
+                this.balda8 = false;
+            }
+        };
         gameState.prototype.update = function () {
             _super.prototype.update.call(this);
             this.game.physics.arcade.collide(this.gat, this.terradreta);
@@ -466,7 +455,7 @@ var ElMeuJoc;
                 this.movePlayer();
             }
             else {
-                this.game.state.start("gameover");
+                this.gameOverFuncio();
             }
             if (this.CONTADORTIEMPO == 0) {
                 this.gameOver = true;

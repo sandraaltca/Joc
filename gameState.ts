@@ -31,7 +31,7 @@ module  ElMeuJoc{
         balda6 = false;
         balda7 = false;
         balda8 = false;
-
+        score=0;
 
 
 
@@ -149,6 +149,7 @@ module  ElMeuJoc{
          */
         tirarObjectes(gat:Phaser.Sprite, objecte:Objecte) {
             var num = objecte.balda;
+            this.score = this.score+10;
             objecte.kill();
             this.alliberarBlada(num);
         }
@@ -329,7 +330,67 @@ module  ElMeuJoc{
             this.contadorObjectes++;
         }
 
+        gameOverFuncio(){
+            if(this.backgrndOvr) {
 
+                this.gameOverBac = this.game.add.sprite(
+                    this.game.world.centerX,
+                    this.game.world.centerY,
+                    'score'
+                );
+                this.gameOverBac.anchor.setTo(0.5, 0.5);
+                var titol = this.game.add.bitmapText(
+                    this.game.world.centerX,
+                    this.game.world.centerY - 180,
+                    'carrier_command',
+                    "  Has sigut un gat! ",
+                    18);
+                titol.anchor.setTo(0.5, 0.5);
+                var score1 = this.game.add.bitmapText(
+                    this.game.world.centerX,
+                    this.game.world.centerY - 150,
+                    'carrier_command',
+                    " Has tirat ",
+                    15);
+                score1.anchor.setTo(0.5, 0.5);
+                var score = this.game.add.bitmapText(
+                    this.game.world.centerX,
+                    this.game.world.centerY - 100,
+                    'carrier_command', "" + this.score,
+                    40);
+                score.anchor.setTo(0.5, 0.5);
+                var score1 = this.game.add.bitmapText(
+                    this.game.world.centerX,
+                    this.game.world.centerY - 30,
+                    'carrier_command', " coses. ",
+                    15);
+                score1.anchor.setTo(0.5, 0.5);
+                var teclas = this.game.add.sprite(
+                    this.game.world.centerX,
+                    this.game.world.centerY + 100,
+                    'Keys');
+                teclas.anchor.setTo(0.5, 0.5);
+                this.backgrndOvr=false;
+            }
+
+            if(this.cursor.up.isDown) {
+                this.game.state.restart();
+                this.contadorObjectes=0;
+                this.CONTADORTIEMPO=30;
+                this.gameOver = false;
+                this.backgrndOvr=false;
+                this.balda1 = false;
+                this.balda2 = false;
+                this.balda3 = false;
+                this.balda4 = false;
+                this.balda5 = false;
+                this.balda6 = false;
+                this.balda7 = false;
+                this.balda8 = false;
+            }
+
+
+        }
         update():void {
             super.update();
             this.game.physics.arcade.collide(this.gat, this.terradreta);
@@ -345,7 +406,8 @@ module  ElMeuJoc{
                 }
                 this.movePlayer();
             }else{
-                this.game.state.start("gameover");
+                this.gameOverFuncio();
+
             }
 
             if(this.CONTADORTIEMPO==0){

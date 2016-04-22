@@ -10,7 +10,6 @@
     "main.ts",
     "menuStartGame.ts",
     "LoadState.ts",
-    "GameOver.ts",
     "gameState.ts",
     "phaser/phaser.d.ts"
   ]
