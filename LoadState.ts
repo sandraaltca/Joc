@@ -30,9 +30,9 @@ module ElMeuJoc {
             this.load.image('flor', 'assets/flor.png');
             this.load.image('basura', 'assets/basura.png');
             this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
+            this.load.spritesheet('key_up', 'assets/Keys_she.png', 124.5, 111);
             this.load.image('score', 'assets/ScoreBackground.png');
-
-
+            this.load.audio('audio', 'assets/audio/SoundEffects/p-ping.mp3');
             //Activem la fisica al joc
             this.physics.startSystem(Phaser.Physics.ARCADE);
 

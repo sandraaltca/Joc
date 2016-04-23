@@ -4,10 +4,10 @@
 /// <reference path="phaser/phaser.d.ts"/>
 //Example game: http://catscatscatscatscats.com/
 //http://www.phaser.io/news/2015/11/be-a-cat
-//74538f
 module  ElMeuJoc{
 
     export class gameState extends Phaser.State {
+        fx;
         gameOverBac:Phaser.Sprite;
         cursor:Phaser.CursorKeys;
         terraesquerra:Phaser.Sprite;
@@ -24,9 +24,6 @@ module  ElMeuJoc{
         contadorObjectes=0;
         backgrndOvr=false;
         score=0;
-
-
-
         /**
          * Metodes que utilitzaré al create.
          */
@@ -42,7 +39,6 @@ module  ElMeuJoc{
         /**
          * Metode configGat serveix per configurar el Sprite Gat
          */
-        // this.playerAnimationsLoad();
         configGat() {
             this.gat = this.game.add.sprite(
                 this.game.world.centerX,
@@ -51,6 +47,7 @@ module  ElMeuJoc{
             );
             // Cambiamos el "anchor" del jugador
             this.gat.anchor.setTo(0.5, 0.5);
+            //Carrego les animacions del gat
             this.playerAnimationsLoad();
             //Afegueixo fisica al gat.
             this.game.physics.arcade.enable(this.gat);
@@ -95,7 +92,12 @@ module  ElMeuJoc{
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
             // Cogemos los cursores para gestionar la entrada
             this.cursor = this.game.input.keyboard.createCursorKeys();
+            this.fx= this.add.audio('audio');
         }
+
+        /**
+         * Afegueixo les animacions al gat
+         */
         playerAnimationsLoad(){
             this.gat.animations.add('idEsperar', [0,1,2,3], 10,true);
             this.gat.animations.add('idDreta', [8,9,10,11,12,13,14,15], 10,true);
@@ -145,6 +147,7 @@ module  ElMeuJoc{
          */
         tirarObjectes(gat:Phaser.Sprite, objecte:Objecte) {
             this.score = this.score+1;
+            this.fx.play();
             objecte.kill();
         }
 
@@ -227,6 +230,7 @@ module  ElMeuJoc{
 
         /***
          * Metode per moure al jugador (gat)
+         * ( NO HE CONSEGUIT MILLORAR EL MOVIMENT DEL GAT )
          */
         movePlayer():void {
             // Si pulsamos el cursor izquierdo
@@ -253,9 +257,7 @@ module  ElMeuJoc{
                 this.gat.body.velocity.y = -320;
                 this.gat.animations.play('idDreta');
             }
-            if (this.CONTADORTIEMPO == 0) {
 
-            }
 
         }
 
@@ -289,6 +291,10 @@ module  ElMeuJoc{
                 this.backgrndOvr=true;
             }
         }
+
+        /**
+         * Funció game over quane al contrador arriba al 0
+         */
         gameOverFuncio(){
             if(this.backgrndOvr) {
 
@@ -327,27 +333,27 @@ module  ElMeuJoc{
                 var teclas = this.game.add.sprite(
                     this.game.world.centerX,
                     this.game.world.centerY + 100,
-                    'Keys');
+                    'key_up');
                 teclas.anchor.setTo(0.5, 0.5);
+                teclas.animations.add('mov', [0,1], 2,true);
+                teclas.animations.play('mov');
                 this.backgrndOvr=false;
             }
 
             if(this.cursor.up.isDown) {
                 this.game.state.restart();
-                this.contadorObjectes=0;
-                this.CONTADORTIEMPO=30;
+                this.score=0;
+                this.contadorObjectes = 0;
+                this.CONTADORTIEMPO = 30;
                 this.gameOver = false;
-                this.backgrndOvr=false;
+                this.backgrndOvr = false;
             }
-
-
         }
     }
     class Objecte extends Phaser.Sprite {
         balda;
         temporitObjecteKill=3;
         game:Phaser.Game;
-
         constructor(game:Phaser.Game, x:number, y:number, key:string, balda:number) {
             super(game, x, y, key, 0);
             this.game.time.events.loop(Phaser.Timer.SECOND, this.temporitzadorObjecte, this);
@@ -362,8 +368,9 @@ module  ElMeuJoc{
         }
         update():void{
             super.update();
-            if(this.temporitObjecteKill==0){
+            if(this.temporitObjecteKill==1){
                 this.game.add.tween(this).to( { alpha: 0 }, 2000, Phaser.Easing.Bounce.Out, true);
+            }else if(this.temporitObjecteKill==-1) {
                 this.kill();
             }
         }

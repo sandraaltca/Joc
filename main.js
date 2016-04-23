@@ -44,14 +44,18 @@ var ElMeuJoc;
         menuStartGame.prototype.create = function () {
             _super.prototype.create.call(this);
             this.game.stage.backgroundColor = "#74538f";
-            this.teclesMov = this.add.sprite(this.world.centerX - 100, this.world.centerY, 'Keys');
+            this.teclesMov = this.add.sprite(this.world.centerX - 100, this.world.centerY, 'key_up');
+            this.teclesMov.animations.add('mov', [0, 1], 2, true);
+            this.teclesMov.animations.play('mov');
             this.teclesMov.anchor.setTo(0.5, 0.5);
-            this.textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'Sigues un gat !', 30);
-            this.textIntro.anchor.setTo(0.5, 0.5);
+            var textIntro = this.game.add.bitmapText(this.world.centerX, 100, 'carrier_command', 'Sigues un gat !', 30);
+            textIntro.anchor.setTo(0.5, 0.5);
             this.cursor = this.game.input.keyboard.createCursorKeys();
             this.kitty = this.add.sprite(this.world.centerX, this.world.centerY - 25, 'kitty');
             this.kitty.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
             this.kitty.animations.play('idEsperar');
+            var clic = this.game.add.bitmapText(this.world.centerX, this.world.centerY + 120, 'carrier_command', 'clic up !', 30);
+            clic.anchor.setTo(0.5, 0.5);
         };
         menuStartGame.prototype.update = function () {
             _super.prototype.update.call(this);
@@ -95,7 +99,9 @@ var ElMeuJoc;
             this.load.image('flor', 'assets/flor.png');
             this.load.image('basura', 'assets/basura.png');
             this.load.spritesheet('kitty', 'assets/Kitty2.png', 108, 78);
+            this.load.spritesheet('key_up', 'assets/Keys_she.png', 124.5, 111);
             this.load.image('score', 'assets/ScoreBackground.png');
+            this.load.audio('audio', 'assets/audio/SoundEffects/p-ping.mp3');
             //Activem la fisica al joc
             this.physics.startSystem(Phaser.Physics.ARCADE);
         };
@@ -113,7 +119,6 @@ var ElMeuJoc;
 /// <reference path="phaser/phaser.d.ts"/>
 //Example game: http://catscatscatscatscats.com/
 //http://www.phaser.io/news/2015/11/be-a-cat
-//74538f
 var ElMeuJoc;
 (function (ElMeuJoc) {
     var gameState = (function (_super) {
@@ -142,11 +147,11 @@ var ElMeuJoc;
         /**
          * Metode configGat serveix per configurar el Sprite Gat
          */
-        // this.playerAnimationsLoad();
         gameState.prototype.configGat = function () {
             this.gat = this.game.add.sprite(this.game.world.centerX, this.game.world.height - 83, 'kitty');
             // Cambiamos el "anchor" del jugador
             this.gat.anchor.setTo(0.5, 0.5);
+            //Carrego les animacions del gat
             this.playerAnimationsLoad();
             //Afegueixo fisica al gat.
             this.game.physics.arcade.enable(this.gat);
@@ -175,7 +180,11 @@ var ElMeuJoc;
             this.game.time.events.loop(Phaser.Timer.SECOND, this.tempsObjectes, this);
             // Cogemos los cursores para gestionar la entrada
             this.cursor = this.game.input.keyboard.createCursorKeys();
+            this.fx = this.add.audio('audio');
         };
+        /**
+         * Afegueixo les animacions al gat
+         */
         gameState.prototype.playerAnimationsLoad = function () {
             this.gat.animations.add('idEsperar', [0, 1, 2, 3], 10, true);
             this.gat.animations.add('idDreta', [8, 9, 10, 11, 12, 13, 14, 15], 10, true);
@@ -220,6 +229,7 @@ var ElMeuJoc;
          */
         gameState.prototype.tirarObjectes = function (gat, objecte) {
             this.score = this.score + 1;
+            this.fx.play();
             objecte.kill();
         };
         /**
@@ -297,6 +307,7 @@ var ElMeuJoc;
         };
         /***
          * Metode per moure al jugador (gat)
+         * ( NO HE CONSEGUIT MILLORAR EL MOVIMENT DEL GAT )
          */
         gameState.prototype.movePlayer = function () {
             // Si pulsamos el cursor izquierdo
@@ -320,8 +331,6 @@ var ElMeuJoc;
                 // el jugador se mueve hacia arriba (salto)
                 this.gat.body.velocity.y = -320;
                 this.gat.animations.play('idDreta');
-            }
-            if (this.CONTADORTIEMPO == 0) {
             }
         };
         /**
@@ -352,6 +361,9 @@ var ElMeuJoc;
                 this.backgrndOvr = true;
             }
         };
+        /**
+         * Funció game over quane al contrador arriba al 0
+         */
         gameState.prototype.gameOverFuncio = function () {
             if (this.backgrndOvr) {
                 this.gameOverBac = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'score');
@@ -364,12 +376,15 @@ var ElMeuJoc;
                 score.anchor.setTo(0.5, 0.5);
                 var score1 = this.game.add.bitmapText(this.game.world.centerX, this.game.world.centerY - 30, 'carrier_command', " coses. ", 15);
                 score1.anchor.setTo(0.5, 0.5);
-                var teclas = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY + 100, 'Keys');
+                var teclas = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY + 100, 'key_up');
                 teclas.anchor.setTo(0.5, 0.5);
+                teclas.animations.add('mov', [0, 1], 2, true);
+                teclas.animations.play('mov');
                 this.backgrndOvr = false;
             }
             if (this.cursor.up.isDown) {
                 this.game.state.restart();
+                this.score = 0;
                 this.contadorObjectes = 0;
                 this.CONTADORTIEMPO = 30;
                 this.gameOver = false;
@@ -395,8 +410,10 @@ var ElMeuJoc;
         };
         Objecte.prototype.update = function () {
             _super.prototype.update.call(this);
-            if (this.temporitObjecteKill == 0) {
+            if (this.temporitObjecteKill == 1) {
                 this.game.add.tween(this).to({ alpha: 0 }, 2000, Phaser.Easing.Bounce.Out, true);
+            }
+            else if (this.temporitObjecteKill == -1) {
                 this.kill();
             }
         };
